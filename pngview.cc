@@ -1,24 +1,29 @@
 //
-// tr-pngview 2018-01-18.13
-// Periodically read a PNG file and continue to show on a window
-// without tearing and flicker
+// tr-pngview 2018-01-20.10
 // https://github.com/trueroad/tr-pngview
 //
-// Copyright (C) 2018 Masamichi Hosoda. All rights reserved.
+// Periodically read a PNG file and continue to show on a window
+// without tearing and flicker
+//
+// Copyright (C) 2018 Masamichi Hosoda.
+// All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
 // are met:
-// 1. Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-// 2. Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
 //
-// THIS SOFTWARE IS PROVIDED BY AUTHOR AND CONTRIBUTORS ``AS IS'' AND
-// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// * Redistributions of source code must retain the above copyright notice,
+//   this list of conditions and the following disclaimer.
+//
+// * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 // IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED.  IN NO EVENT SHALL AUTHOR OR CONTRIBUTORS BE LIABLE
+// ARE DISCLAIMED.
+// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
 // FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
 // OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -33,7 +38,7 @@
 #include <gdiplus.h>
 
 const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-18.13\n"
+  TEXT ("tr-pngview 2018-01-20.10\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
         "License: BSD-2-Clause\n\n"
         "https://github.com/trueroad/tr-pngview");
