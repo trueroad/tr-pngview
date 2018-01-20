@@ -1,5 +1,5 @@
 //
-// tr-pngview 2018-01-20.13
+// tr-pngview 2018-01-20.16
 // https://github.com/trueroad/tr-pngview
 //
 // Periodically read a PNG file and continue to show on a window
@@ -41,7 +41,7 @@
 #include "pngview_res.h"
 
 const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-20.13\n"
+  TEXT ("tr-pngview 2018-01-20.16\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
         "License: BSD-2-Clause\n\n"
         "https://github.com/trueroad/tr-pngview");
@@ -139,6 +139,7 @@ private:
 
   bitmap_loader bl_;
   bool bstrech_ = false;
+  HMENU hmenu_ = NULL;
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
@@ -169,6 +170,9 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
                             NULL, NULL, hInstance, this);
   if (!hwnd)
     return false;
+
+  hmenu_ = GetMenu (hwnd);
+  SetMenu (hwnd, NULL);
 
   ShowWindow (hwnd, nCmdShow);
   UpdateWindow (hwnd);
@@ -265,6 +269,19 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           break;
         }
       return 0;
+
+    case WM_SYSCOMMAND:
+      if (wParam == SC_KEYMENU)
+        {
+          SetMenu (hwnd, hmenu_);
+          InvalidateRect (hwnd, NULL, TRUE);
+        }
+      break;
+
+    case WM_EXITMENULOOP:
+      SetMenu (hwnd, NULL);
+      InvalidateRect (hwnd, NULL, TRUE);
+      break;
 
     case WM_CREATE:
       bl_.load ();
