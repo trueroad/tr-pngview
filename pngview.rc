@@ -34,3 +34,10 @@
 
 // UTF-8
 #pragma code_page(65001)
+
+IDM_MENU MENU
+{
+ POPUP "&File" {
+  MENUITEM "E&xit", IDM_EXIT
+ }
+}

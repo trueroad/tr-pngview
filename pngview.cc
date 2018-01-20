@@ -38,6 +38,8 @@
 #include <gdiplus.h>
 #include <sys/stat.h>
 
+#include "pngview_res.h"
+
 const TCHAR g_package[] =
   TEXT ("tr-pngview 2018-01-20.13\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
@@ -156,7 +158,7 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
   wc.hIcon         = LoadIcon (NULL, IDI_APPLICATION);
   wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
   wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
-  wc.lpszMenuName  = NULL;
+  wc.lpszMenuName  = MAKEINTRESOURCE (IDM_MENU);
   wc.lpszClassName = g_classname;
   if (!RegisterClass (&wc))
     return false;
@@ -253,6 +255,15 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
     case WM_RBUTTONDOWN:
       MessageBox (hwnd, g_package, L"About", MB_OK);
+      return 0;
+
+    case WM_COMMAND:
+      switch (LOWORD (wParam))
+        {
+        case IDM_EXIT:
+          SendMessage (hwnd, WM_CLOSE, 0, 0);
+          break;
+        }
       return 0;
 
     case WM_CREATE:
