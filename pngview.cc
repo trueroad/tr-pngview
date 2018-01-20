@@ -1,5 +1,5 @@
 //
-// tr-pngview 2018-01-20.10
+// tr-pngview 2018-01-20.13
 // https://github.com/trueroad/tr-pngview
 //
 // Periodically read a PNG file and continue to show on a window
@@ -36,9 +36,10 @@
 #include <windows.h>
 #include <tchar.h>
 #include <gdiplus.h>
+#include <sys/stat.h>
 
 const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-20.10\n"
+  TEXT ("tr-pngview 2018-01-20.13\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
         "License: BSD-2-Clause\n\n"
         "https://github.com/trueroad/tr-pngview");
@@ -81,12 +82,21 @@ public:
 
   void load (void)
   {
+    struct _stat st;
+    if (_wstat (g_filename, &st))
+      return;
+    if (st.st_size == size_ && st.st_mtime == mtime_)
+      return;
+
     Gdiplus::Bitmap tmp_bmp {g_filename};
     release ();
     bmp_ = new Gdiplus::Bitmap (tmp_bmp.GetWidth (), tmp_bmp.GetHeight ());
 
     Gdiplus::Graphics offscreen {bmp_};
     offscreen.DrawImage (&tmp_bmp, 0, 0);
+
+    size_ = st.st_size;
+    mtime_ = st.st_mtime;
   }
   void release (void)
   {
@@ -103,6 +113,8 @@ public:
 
 private:
   Gdiplus::Bitmap *bmp_ = NULL;
+  off_t size_ = 0;
+  time_t mtime_ = 0;
 
   bitmap_loader (const bitmap_loader&) = delete;
   bitmap_loader& operator= (const bitmap_loader&) = delete;
