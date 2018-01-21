@@ -269,6 +269,11 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         }
       return 0;
 
+    case WM_MOUSEACTIVATE:
+      if (HIWORD (lParam) == WM_LBUTTONDOWN)
+        return MA_ACTIVATEANDEAT;
+      break;
+
     case WM_SYSCOMMAND:
       if (wParam == SC_KEYMENU)
         {
