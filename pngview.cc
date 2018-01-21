@@ -181,6 +181,7 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
 
   hmenu_ = GetMenu (hwnd_);
   SetMenu (hwnd_, NULL);
+  set_stretch_mode (bstretch_);
 
   ShowWindow (hwnd_, nCmdShow);
   UpdateWindow (hwnd_);
@@ -204,8 +205,23 @@ window_class::message_loop (void)
 void
 window_class::set_stretch_mode (bool b)
 {
-  bstretch_ = b;
-  InvalidateRect (hwnd_, NULL, TRUE);
+  if (bstretch_ != b)
+    {
+      bstretch_ = b;
+      InvalidateRect (hwnd_, NULL, TRUE);
+    }
+
+  MENUITEMINFO mii {0};
+  mii.cbSize = sizeof (mii);
+  mii.fMask = MIIM_STATE;
+
+  mii.fState = !bstretch_ ? MFS_CHECKED : MFS_UNCHECKED;
+  SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
+
+  mii.fState = bstretch_ ? MFS_CHECKED : MFS_UNCHECKED;
+  SetMenuItemInfo (hmenu_, IDM_FILL, FALSE, &mii);
+
+  DrawMenuBar (hwnd_);
 }
 
 LRESULT CALLBACK
