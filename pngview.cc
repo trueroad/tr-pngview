@@ -1,5 +1,5 @@
 //
-// tr-pngview 2018-01-20.16
+// tr-pngview 2018-01-21.00
 // https://github.com/trueroad/tr-pngview
 //
 // Periodically read a PNG file and continue to show on a window
@@ -41,7 +41,7 @@
 #include "pngview_res.h"
 
 const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-20.16\n"
+  TEXT ("tr-pngview 2018-01-21.00\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
         "License: BSD-2-Clause\n\n"
         "https://github.com/trueroad/tr-pngview");
@@ -257,13 +257,12 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       InvalidateRect (hwnd, NULL, TRUE);
       return 0;
 
-    case WM_RBUTTONDOWN:
-      MessageBox (hwnd, g_package, L"About", MB_OK);
-      return 0;
-
     case WM_COMMAND:
       switch (LOWORD (wParam))
         {
+        case IDM_ABOUT:
+          MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
+          break;
         case IDM_EXIT:
           SendMessage (hwnd, WM_CLOSE, 0, 0);
           break;

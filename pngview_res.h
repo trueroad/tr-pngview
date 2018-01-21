@@ -32,3 +32,4 @@
 
 #define IDM_MENU 0x201
 #define IDM_EXIT 0x102
+#define IDM_ABOUT 0x121
