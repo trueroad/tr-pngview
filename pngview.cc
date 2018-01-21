@@ -137,9 +137,11 @@ private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
+  HWND hwnd_ = NULL;
+  HMENU hmenu_ = NULL;
+
   bitmap_loader bl_;
   bool bstretch_ = false;
-  HMENU hmenu_ = NULL;
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
@@ -164,18 +166,18 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
   if (!RegisterClass (&wc))
     return false;
 
-  HWND hwnd = CreateWindow (g_classname, g_window_title, WS_OVERLAPPEDWINDOW,
-                            CW_USEDEFAULT, CW_USEDEFAULT,
-                            CW_USEDEFAULT, CW_USEDEFAULT,
-                            NULL, NULL, hInstance, this);
-  if (!hwnd)
+  hwnd_ = CreateWindow (g_classname, g_window_title, WS_OVERLAPPEDWINDOW,
+                        CW_USEDEFAULT, CW_USEDEFAULT,
+                        CW_USEDEFAULT, CW_USEDEFAULT,
+                        NULL, NULL, hInstance, this);
+  if (!hwnd_)
     return false;
 
-  hmenu_ = GetMenu (hwnd);
-  SetMenu (hwnd, NULL);
+  hmenu_ = GetMenu (hwnd_);
+  SetMenu (hwnd_, NULL);
 
-  ShowWindow (hwnd, nCmdShow);
-  UpdateWindow (hwnd);
+  ShowWindow (hwnd_, nCmdShow);
+  UpdateWindow (hwnd_);
 
   return true;
 }
