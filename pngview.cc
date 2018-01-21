@@ -126,6 +126,8 @@ private:
 
 class window_class
 {
+  enum class stretch_mode {dot_by_dot, fill};
+
 public:
   window_class () = default;
   ~window_class () = default;
@@ -133,11 +135,12 @@ public:
   bool init (HINSTANCE, int);
   int message_loop (void);
 
-  bool get_stretch_mode (void)
+  stretch_mode get_stretch_mode (void)
   {
-    return bstretch_;
+    return sm_;
   }
-  void set_stretch_mode (bool);
+  void set_stretch_mode (stretch_mode);
+  void increment_stretch_mode (void);
 
 private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
@@ -147,7 +150,7 @@ private:
   HMENU hmenu_ = NULL;
 
   bitmap_loader bl_;
-  bool bstretch_ = false;
+  stretch_mode sm_ = stretch_mode::dot_by_dot;
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
@@ -181,7 +184,7 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
 
   hmenu_ = GetMenu (hwnd_);
   SetMenu (hwnd_, NULL);
-  set_stretch_mode (bstretch_);
+  set_stretch_mode (sm_);
 
   ShowWindow (hwnd_, nCmdShow);
   UpdateWindow (hwnd_);
@@ -203,11 +206,11 @@ window_class::message_loop (void)
 }
 
 void
-window_class::set_stretch_mode (bool b)
+window_class::set_stretch_mode (stretch_mode s)
 {
-  if (bstretch_ != b)
+  if (sm_ != s)
     {
-      bstretch_ = b;
+      sm_ = s;
       InvalidateRect (hwnd_, NULL, TRUE);
     }
 
@@ -215,13 +218,33 @@ window_class::set_stretch_mode (bool b)
   mii.cbSize = sizeof (mii);
   mii.fMask = MIIM_STATE;
 
-  mii.fState = !bstretch_ ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState = sm_ == stretch_mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED;
   SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
 
-  mii.fState = bstretch_ ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState = sm_ == stretch_mode::fill ? MFS_CHECKED : MFS_UNCHECKED;
   SetMenuItemInfo (hmenu_, IDM_FILL, FALSE, &mii);
 
   DrawMenuBar (hwnd_);
+}
+
+void
+window_class::increment_stretch_mode (void)
+{
+  stretch_mode s;
+
+  switch (sm_)
+    {
+    case stretch_mode::dot_by_dot:
+      s = stretch_mode::fill;
+      break;
+    case stretch_mode::fill:
+      s = stretch_mode::dot_by_dot;
+      break;
+    default:
+      s = sm_;
+    }
+
+  set_stretch_mode (s);
 }
 
 LRESULT CALLBACK
@@ -260,18 +283,23 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
         {
           Gdiplus::Graphics g {hdc};
-          if (bstretch_)
+          switch (sm_)
             {
-              RECT r;
-              GetClientRect (hwnd, &r);
-              g.DrawImage (bl_.get (),
-                           static_cast<int> (r.left),
-                           static_cast<int> (r.top),
-                           static_cast<int> (r.right),
-                           static_cast<int> (r.bottom));
+            case stretch_mode::dot_by_dot:
+              g.DrawImage (bl_.get (), 0, 0);
+              break;
+            case stretch_mode::fill:
+              {
+                RECT r;
+                GetClientRect (hwnd, &r);
+                g.DrawImage (bl_.get (),
+                             static_cast<int> (r.left),
+                             static_cast<int> (r.top),
+                             static_cast<int> (r.right),
+                             static_cast<int> (r.bottom));
+              }
+              break;
             }
-          else
-            g.DrawImage (bl_.get (), 0, 0);
         }
 
         EndPaint (hwnd, &ps);
@@ -284,17 +312,17 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       return 0;
 
     case WM_LBUTTONDOWN:
-      set_stretch_mode (!get_stretch_mode ());
+      increment_stretch_mode ();
       return 0;
 
     case WM_COMMAND:
       switch (LOWORD (wParam))
         {
         case IDM_DOT_BY_DOT:
-          set_stretch_mode (false);
+          set_stretch_mode (stretch_mode::dot_by_dot);
           break;
         case IDM_FILL:
-          set_stretch_mode (true);
+          set_stretch_mode (stretch_mode::fill);
           break;
         case IDM_ABOUT:
           MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
