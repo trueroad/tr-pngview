@@ -199,6 +199,10 @@ private:
   int stretch_contain_y_ = 0;
   int stretch_contain_width_ = 0;
   int stretch_contain_height_ = 0;
+  int stretch_cover_x_ = 0;
+  int stretch_cover_y_ = 0;
+  int stretch_cover_width_ = 0;
+  int stretch_cover_height_ = 0;
 
   bitmap_loader bl_;
   stretch_mode sm_ = stretch_mode::dot_by_dot;
@@ -442,27 +446,39 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 void
 window_class::calc_coordinate (void)
 {
+  auto zoom_ratio_height = static_cast<double> (height_) / bl_.height ();
+  auto bmp_zoomed_width = zoom_ratio_height * bl_.width ();
+
+  auto zoom_ratio_width = static_cast<double> (width_) / bl_.width ();
+  auto bmp_zoomed_height = zoom_ratio_width * bl_.height ();
+
   if (aspect_ratio_ > bl_.aspect_ratio ())
     {
-      auto zoom_ratio = static_cast<double> (height_) / bl_.height ();
-      auto bmp_zoomed_width = zoom_ratio * bl_.width ();
-
       stretch_contain_x_ = (width_ - bmp_zoomed_width) / 2;
       stretch_contain_width_ = bmp_zoomed_width;
 
       stretch_contain_y_ = 0;
       stretch_contain_height_ = height_;
+
+      stretch_cover_y_ = (height_ - bmp_zoomed_height) / 2;
+      stretch_cover_height_ = bmp_zoomed_height;
+
+      stretch_cover_x_ = 0;
+      stretch_cover_width_ = width_;
     }
   else
     {
-      auto zoom_ratio = static_cast<double> (width_) / bl_.width ();
-      auto bmp_zoomed_height = zoom_ratio * bl_.height ();
-
       stretch_contain_y_ = (height_ - bmp_zoomed_height) / 2;
       stretch_contain_height_ = bmp_zoomed_height;
 
       stretch_contain_x_ = 0;
       stretch_contain_width_ = width_;
+
+      stretch_cover_x_ = (width_ - bmp_zoomed_width) / 2;
+      stretch_cover_width_ = bmp_zoomed_width;
+
+      stretch_cover_y_ = 0;
+      stretch_cover_height_ = height_;
     }
 }
 
