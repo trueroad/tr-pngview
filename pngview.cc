@@ -195,6 +195,10 @@ private:
   int width_ = 0;
   int height_ = 0;
   double aspect_ratio_ = 0;
+  int stretch_contain_x_ = 0;
+  int stretch_contain_y_ = 0;
+  int stretch_contain_width_ = 0;
+  int stretch_contain_height_ = 0;
 
   bitmap_loader bl_;
   stretch_mode sm_ = stretch_mode::dot_by_dot;
@@ -424,6 +428,28 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 void
 window_class::calc_coordinate (void)
 {
+  if (aspect_ratio_ > bl_.aspect_ratio ())
+    {
+      auto zoom_ratio = static_cast<double> (height_) / bl_.height ();
+      auto bmp_zoomed_width = zoom_ratio * bl_.width ();
+
+      stretch_contain_x_ = (width_ - bmp_zoomed_width) / 2;
+      stretch_contain_width_ = bmp_zoomed_width;
+
+      stretch_contain_y_ = 0;
+      stretch_contain_height_ = height_;
+    }
+  else
+    {
+      auto zoom_ratio = static_cast<double> (width_) / bl_.width ();
+      auto bmp_zoomed_height = zoom_ratio * bl_.height ();
+
+      stretch_contain_y_ = (height_ - bmp_zoomed_height) / 2;
+      stretch_contain_height_ = bmp_zoomed_height;
+
+      stretch_contain_x_ = 0;
+      stretch_contain_width_ = width_;
+    }
 }
 
 int WINAPI
