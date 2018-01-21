@@ -34,4 +34,5 @@
 #define IDM_EXIT 0x102
 #define IDM_DOT_BY_DOT 0x111
 #define IDM_FILL 0x112
+#define IDM_CONTAIN 0x113
 #define IDM_ABOUT 0x121
