@@ -1,5 +1,5 @@
 //
-// tr-pngview 2018-01-21.00
+// tr-pngview 2018-01-21.10
 // https://github.com/trueroad/tr-pngview
 //
 // Periodically read a PNG file and continue to show on a window
@@ -41,7 +41,7 @@
 #include "pngview_res.h"
 
 const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-21.00\n"
+  TEXT ("tr-pngview 2018-01-21.10\n"
         "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
         "License: BSD-2-Clause\n\n"
         "https://github.com/trueroad/tr-pngview");
