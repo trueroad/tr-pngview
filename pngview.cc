@@ -248,6 +248,8 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
   SetMenu (hwnd_, NULL);
   set_stretch_mode (sm_);
 
+  DragAcceptFiles (hwnd_, TRUE);
+
   ShowWindow (hwnd_, nCmdShow);
   UpdateWindow (hwnd_);
 
@@ -429,6 +431,22 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       else
         aspect_ratio_ = static_cast<double> (width_) / height_;
       calc_coordinate ();
+      break;
+
+    case WM_DROPFILES:
+      {
+        std::wstring buff;
+        HDROP hd = reinterpret_cast<HDROP> (wParam);
+
+        buff.resize (DragQueryFile (hd, 0, NULL, 0) + 1);
+        DragQueryFile (hd, 0, &buff.at (0), buff.size ());
+        DragFinish (hd);
+
+        bl_.set_filename (buff);
+      }
+      bl_.load ();
+      calc_coordinate ();
+      InvalidateRect (hwnd, NULL, TRUE);
       break;
 
     case WM_MOUSEACTIVATE:
