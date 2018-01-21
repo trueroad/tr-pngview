@@ -330,8 +330,8 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       return 0;
 
     case WM_TIMER:
-      bl_.load ();
-      InvalidateRect (hwnd, NULL, FALSE);
+      if (bl_.load () != bitmap_loader::load_status::no_change)
+        InvalidateRect (hwnd, NULL, FALSE);
       return 0;
 
     case WM_LBUTTONDOWN:
