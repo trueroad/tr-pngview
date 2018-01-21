@@ -188,6 +188,8 @@ private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
+  void calc_coordinate (void);
+
   HWND hwnd_ = NULL;
   HMENU hmenu_ = NULL;
   int width_ = 0;
@@ -344,8 +346,14 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       return 0;
 
     case WM_TIMER:
-      if (bl_.load () != bitmap_loader::load_status::no_change)
-        InvalidateRect (hwnd, NULL, FALSE);
+      switch (bl_.load ())
+        {
+        case bitmap_loader::load_status::size_changed:
+          calc_coordinate ();
+          // no break
+        case bitmap_loader::load_status::same_size:
+          InvalidateRect (hwnd, NULL, FALSE);
+        }
       return 0;
 
     case WM_LBUTTONDOWN:
@@ -377,6 +385,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         aspect_ratio_ = 0;
       else
         aspect_ratio_ = static_cast<double> (width_) / height_;
+      calc_coordinate ();
       break;
 
     case WM_MOUSEACTIVATE:
@@ -399,6 +408,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
     case WM_CREATE:
       bl_.load ();
+      calc_coordinate ();
       SetTimer (hwnd , 1 , 100 , NULL); // 100 ms
       return 0;
 
@@ -409,6 +419,11 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
+}
+
+void
+window_class::calc_coordinate (void)
+{
 }
 
 int WINAPI
