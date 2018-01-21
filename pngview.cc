@@ -117,6 +117,14 @@ public:
     size_ = st.st_size;
     mtime_ = st.st_mtime;
 
+    if (retval != load_status::same_size)
+      {
+        if (width_ == 0 || height_ == 0)
+          aspect_ratio_ = 0;
+        else
+          aspect_ratio_ = static_cast<double> (width_) / height_;
+      }
+
     return retval;
   }
   void release (void)
@@ -139,11 +147,16 @@ public:
   {
     return height_;
   }
+  int aspect_ratio (void)
+  {
+    return aspect_ratio_;
+  }
 
 private:
   Gdiplus::Bitmap *bmp_ = NULL;
   int width_ = 0;
   int height_ = 0;
+  double aspect_ratio_ = 0;
   off_t size_ = 0;
   time_t mtime_ = 0;
 
@@ -179,6 +192,7 @@ private:
   HMENU hmenu_ = NULL;
   int width_ = 0;
   int height_ = 0;
+  double aspect_ratio_ = 0;
 
   bitmap_loader bl_;
   stretch_mode sm_ = stretch_mode::dot_by_dot;
@@ -359,6 +373,10 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     case WM_SIZE:
       width_ = LOWORD (lParam);
       height_ = HIWORD (lParam);
+      if (width_ == 0 || height_ == 0)
+        aspect_ratio_ = 0;
+      else
+        aspect_ratio_ = static_cast<double> (width_) / height_;
       break;
 
     case WM_MOUSEACTIVATE:
