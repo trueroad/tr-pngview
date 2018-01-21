@@ -44,6 +44,7 @@ IDM_MENU MENU
   MENUITEM "&Dot by dot", IDM_DOT_BY_DOT
   MENUITEM "&Fill", IDM_FILL
   MENUITEM "&Contain", IDM_CONTAIN
+  MENUITEM "Co&ver", IDM_COVER
  }
  POPUP "&Help" {
   MENUITEM "&About...", IDM_ABOUT

@@ -168,7 +168,7 @@ private:
 
 class window_class
 {
-  enum class stretch_mode {dot_by_dot, fill, contain};
+  enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
 public:
   window_class () = default;
@@ -282,6 +282,9 @@ window_class::set_stretch_mode (stretch_mode s)
   mii.fState = sm_ == stretch_mode::contain ? MFS_CHECKED : MFS_UNCHECKED;
   SetMenuItemInfo (hmenu_, IDM_CONTAIN, FALSE, &mii);
 
+  mii.fState = sm_ == stretch_mode::cover ? MFS_CHECKED : MFS_UNCHECKED;
+  SetMenuItemInfo (hmenu_, IDM_COVER, FALSE, &mii);
+
   DrawMenuBar (hwnd_);
 }
 
@@ -299,6 +302,9 @@ window_class::increment_stretch_mode (void)
       s = stretch_mode::contain;
       break;
     case stretch_mode::contain:
+      s = stretch_mode::cover;
+      break;
+    case stretch_mode::cover:
       s = stretch_mode::dot_by_dot;
       break;
     default:
@@ -357,6 +363,11 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
                            stretch_contain_x_, stretch_contain_y_,
                            stretch_contain_width_, stretch_contain_height_);
               break;
+            case stretch_mode::cover:
+              g.DrawImage (bl_.get (),
+                           stretch_cover_x_, stretch_cover_y_,
+                           stretch_cover_width_, stretch_cover_height_);
+              break;
             }
         }
 
@@ -390,6 +401,9 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           break;
         case IDM_CONTAIN:
           set_stretch_mode (stretch_mode::contain);
+          break;
+        case IDM_COVER:
+          set_stretch_mode (stretch_mode::cover);
           break;
         case IDM_ABOUT:
           MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
