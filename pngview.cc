@@ -33,6 +33,8 @@
 // SUCH DAMAGE.
 //
 
+#include <string>
+
 #include <windows.h>
 #include <tchar.h>
 #include <gdiplus.h>
@@ -49,7 +51,7 @@ const TCHAR g_package[] =
 const TCHAR g_classname[] = TEXT ("TRPNGVIEW");
 const TCHAR g_window_title[] = TEXT ("pngview");
 
-const WCHAR g_filename[] = L"output.png";
+const WCHAR g_default_filename[] = L"output.png";
 
 class gdiplus_init
 {
@@ -87,12 +89,12 @@ public:
   load_status load (void)
   {
     struct _stat st;
-    if (_wstat (g_filename, &st))
+    if (_wstat (filename_.c_str (), &st))
       return load_status::no_change;
     if (st.st_size == size_ && st.st_mtime == mtime_)
       return load_status::no_change;
 
-    Gdiplus::Bitmap tmp_bmp {g_filename};
+    Gdiplus::Bitmap tmp_bmp {filename_.c_str ()};
 
     load_status retval = load_status::same_size;
     auto w = tmp_bmp.GetWidth ();
@@ -135,6 +137,10 @@ public:
         bmp_ = NULL;
       }
   }
+  void set_filename (const std::wstring &s)
+  {
+    filename_ = s;
+  }
   Gdiplus::Bitmap *get (void)
   {
     return bmp_;
@@ -153,6 +159,7 @@ public:
   }
 
 private:
+  std::wstring filename_ {g_default_filename};
   Gdiplus::Bitmap *bmp_ = NULL;
   int width_ = 0;
   int height_ = 0;
