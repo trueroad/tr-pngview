@@ -40,6 +40,10 @@ IDM_MENU MENU
  POPUP "&File" {
   MENUITEM "E&xit", IDM_EXIT
  }
+ POPUP "&Mode" {
+  MENUITEM "&Dot by dot", IDM_DOT_BY_DOT
+  MENUITEM "&Fill", IDM_FILL
+ }
  POPUP "&Help" {
   MENUITEM "&About...", IDM_ABOUT
  }

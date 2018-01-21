@@ -260,6 +260,14 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     case WM_COMMAND:
       switch (LOWORD (wParam))
         {
+        case IDM_DOT_BY_DOT:
+          bstrech_ = false;
+          InvalidateRect (hwnd, NULL, TRUE);
+          break;
+        case IDM_FILL:
+          bstrech_ = true;
+          InvalidateRect (hwnd, NULL, TRUE);
+          break;
         case IDM_ABOUT:
           MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
           break;
