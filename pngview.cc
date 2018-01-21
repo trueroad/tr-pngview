@@ -76,29 +76,48 @@ private:
 class bitmap_loader
 {
 public:
+  enum class load_status {no_change, same_size, size_changed};
+
   bitmap_loader () = default;
   ~bitmap_loader ()
   {
     release ();
   }
 
-  void load (void)
+  load_status load (void)
   {
     struct _stat st;
     if (_wstat (g_filename, &st))
-      return;
+      return load_status::no_change;
     if (st.st_size == size_ && st.st_mtime == mtime_)
-      return;
+      return load_status::no_change;
 
     Gdiplus::Bitmap tmp_bmp {g_filename};
+
+    load_status retval = load_status::same_size;
+    auto w = tmp_bmp.GetWidth ();
+    if (w != width_)
+      {
+        width_ = w;
+        retval = load_status::size_changed;
+      }
+    auto h = tmp_bmp.GetHeight ();
+    if (h != height_)
+      {
+        height_ = h;
+        retval = load_status::size_changed;
+      }
+
     release ();
-    bmp_ = new Gdiplus::Bitmap (tmp_bmp.GetWidth (), tmp_bmp.GetHeight ());
+    bmp_ = new Gdiplus::Bitmap (width_, height_);
 
     Gdiplus::Graphics offscreen {bmp_};
     offscreen.DrawImage (&tmp_bmp, 0, 0);
 
     size_ = st.st_size;
     mtime_ = st.st_mtime;
+
+    return retval;
   }
   void release (void)
   {
@@ -112,9 +131,19 @@ public:
   {
     return bmp_;
   }
+  int width (void)
+  {
+    return width_;
+  }
+  int height (void)
+  {
+    return height_;
+  }
 
 private:
   Gdiplus::Bitmap *bmp_ = NULL;
+  int width_ = 0;
+  int height_ = 0;
   off_t size_ = 0;
   time_t mtime_ = 0;
 
