@@ -148,6 +148,8 @@ private:
 
   HWND hwnd_ = NULL;
   HMENU hmenu_ = NULL;
+  int width_ = 0;
+  int height_ = 0;
 
   bitmap_loader bl_;
   stretch_mode sm_ = stretch_mode::dot_by_dot;
@@ -289,15 +291,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
               g.DrawImage (bl_.get (), 0, 0);
               break;
             case stretch_mode::fill:
-              {
-                RECT r;
-                GetClientRect (hwnd, &r);
-                g.DrawImage (bl_.get (),
-                             static_cast<int> (r.left),
-                             static_cast<int> (r.top),
-                             static_cast<int> (r.right),
-                             static_cast<int> (r.bottom));
-              }
+              g.DrawImage (bl_.get (), 0, 0, width_, height_);
               break;
             }
         }
@@ -332,6 +326,11 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           break;
         }
       return 0;
+
+    case WM_SIZE:
+      width_ = LOWORD (lParam);
+      height_ = HIWORD (lParam);
+      break;
 
     case WM_MOUSEACTIVATE:
       if (HIWORD (lParam) == WM_LBUTTONDOWN)
