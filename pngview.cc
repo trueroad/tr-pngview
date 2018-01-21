@@ -133,6 +133,12 @@ public:
   bool init (HINSTANCE, int);
   int message_loop (void);
 
+  bool get_stretch_mode (void)
+  {
+    return bstretch_;
+  }
+  void set_stretch_mode (bool);
+
 private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
@@ -195,6 +201,13 @@ window_class::message_loop (void)
   return msg.wParam;
 }
 
+void
+window_class::set_stretch_mode (bool b)
+{
+  bstretch_ = b;
+  InvalidateRect (hwnd_, NULL, TRUE);
+}
+
 LRESULT CALLBACK
 window_class::wndproc_static (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
@@ -255,20 +268,17 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       return 0;
 
     case WM_LBUTTONDOWN:
-      bstretch_ = !bstretch_;
-      InvalidateRect (hwnd, NULL, TRUE);
+      set_stretch_mode (!get_stretch_mode ());
       return 0;
 
     case WM_COMMAND:
       switch (LOWORD (wParam))
         {
         case IDM_DOT_BY_DOT:
-          bstretch_ = false;
-          InvalidateRect (hwnd, NULL, TRUE);
+          set_stretch_mode (false);
           break;
         case IDM_FILL:
-          bstretch_ = true;
-          InvalidateRect (hwnd, NULL, TRUE);
+          set_stretch_mode (true);
           break;
         case IDM_ABOUT:
           MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
