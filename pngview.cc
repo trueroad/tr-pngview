@@ -138,7 +138,7 @@ private:
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
   bitmap_loader bl_;
-  bool bstrech_ = false;
+  bool bstretch_ = false;
   HMENU hmenu_ = NULL;
 
   window_class (const window_class&) = delete;
@@ -229,7 +229,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
         {
           Gdiplus::Graphics g {hdc};
-          if (bstrech_)
+          if (bstretch_)
             {
               RECT r;
               GetClientRect (hwnd, &r);
@@ -253,7 +253,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       return 0;
 
     case WM_LBUTTONDOWN:
-      bstrech_ = !bstrech_;
+      bstretch_ = !bstretch_;
       InvalidateRect (hwnd, NULL, TRUE);
       return 0;
 
@@ -261,11 +261,11 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
       switch (LOWORD (wParam))
         {
         case IDM_DOT_BY_DOT:
-          bstrech_ = false;
+          bstretch_ = false;
           InvalidateRect (hwnd, NULL, TRUE);
           break;
         case IDM_FILL:
-          bstrech_ = true;
+          bstretch_ = true;
           InvalidateRect (hwnd, NULL, TRUE);
           break;
         case IDM_ABOUT:
