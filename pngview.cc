@@ -153,7 +153,7 @@ public:
   {
     return height_;
   }
-  int aspect_ratio (void)
+  double aspect_ratio (void)
   {
     return aspect_ratio_;
   }
