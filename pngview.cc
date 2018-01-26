@@ -40,6 +40,7 @@
 #include <gdiplus.h>
 #include <sys/stat.h>
 
+#include "gdiplus_init.hh"
 #include "pngview_res.h"
 
 const TCHAR g_package[] =
@@ -52,28 +53,6 @@ const TCHAR g_classname[] = TEXT ("TRPNGVIEW");
 const TCHAR g_window_title[] = TEXT ("pngview");
 
 const WCHAR g_default_filename[] = L"output.png";
-
-class gdiplus_init
-{
-public:
-  gdiplus_init ()
-  {
-    Gdiplus::GdiplusStartupInput gpsi;
-    Gdiplus::GdiplusStartup (&token_, &gpsi, NULL);
-  }
-  ~gdiplus_init ()
-  {
-    Gdiplus::GdiplusShutdown (token_);
-  }
-
-private:
-  ULONG_PTR token_;
-
-  gdiplus_init (const gdiplus_init&) = delete;
-  gdiplus_init& operator= (const gdiplus_init&) = delete;
-  gdiplus_init (gdiplus_init&&) = delete;
-  gdiplus_init& operator= (gdiplus_init&&) = delete;
-};
 
 class bitmap_loader
 {
