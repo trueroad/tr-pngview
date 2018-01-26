@@ -415,7 +415,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           set_stretch_mode (stretch_mode::cover);
           break;
         case IDM_ABOUT:
-          MessageBox (hwnd, g_package, L"About tr-pngview", MB_OK);
+          MessageBox (hwnd, g_package, TEXT ("About tr-pngview"), MB_OK);
           break;
         case IDM_EXIT:
           SendMessage (hwnd, WM_CLOSE, 0, 0);
@@ -439,7 +439,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         HDROP hd = reinterpret_cast<HDROP> (wParam);
 
         buff.resize (DragQueryFile (hd, 0, NULL, 0) + 1);
-        DragQueryFile (hd, 0, &buff.at (0), buff.size ());
+        DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
         DragFinish (hd);
 
         bl_.set_filename (buff);
