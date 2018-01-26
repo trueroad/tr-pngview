@@ -3,5 +3,6 @@
 \#*
 \#.*
 *.o
+*.d
 *.exe
 pngview
