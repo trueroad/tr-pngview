@@ -18,7 +18,7 @@ LDFLAGS_STATIC =
 #
 # Objects and libraries
 #
-OBJS = pngview.o pngview.res.o
+OBJS = pngview.o bitmap_loader.o pngview.res.o
 LDLIBS = -lgdiplus -lgdi32
 
 

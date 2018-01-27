@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// bitmap_loader.hh: Bitmap loader class
+// bitmap_loader.cc: Bitmap loader class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,8 +32,7 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_BITMAP_LOADER_HH
-#define INCLUDE_GUARD_BITMAP_LOADER_HH
+#include "bitmap_loader.hh"
 
 #include <string>
 
@@ -42,56 +41,57 @@
 #include <gdiplus.h>
 #include <sys/stat.h>
 
-const WCHAR g_default_filename[] = L"output.png";
-
-class bitmap_loader
+bitmap_loader::load_status
+bitmap_loader::load (void)
 {
-public:
-  enum class load_status {no_change, same_size, size_changed};
+  struct _stat st;
+  if (_wstat (filename_.c_str (), &st))
+    return load_status::no_change;
+  if (st.st_size == size_ && st.st_mtime == mtime_)
+    return load_status::no_change;
 
-  bitmap_loader () = default;
-  ~bitmap_loader ()
-  {
-    release ();
-  }
+  Gdiplus::Bitmap tmp_bmp {filename_.c_str ()};
 
-  load_status load (void);
-  void release (void);
+  load_status retval = load_status::same_size;
+  auto w = tmp_bmp.GetWidth ();
+  if (w != width_)
+    {
+      width_ = w;
+      retval = load_status::size_changed;
+    }
+  auto h = tmp_bmp.GetHeight ();
+  if (h != height_)
+    {
+      height_ = h;
+      retval = load_status::size_changed;
+    }
 
-  void set_filename (const std::wstring &s)
-  {
-    filename_ = s;
-  }
-  Gdiplus::Bitmap *get (void)
-  {
-    return bmp_;
-  }
-  int width (void)
-  {
-    return width_;
-  }
-  int height (void)
-  {
-    return height_;
-  }
-  double aspect_ratio (void)
-  {
-    return aspect_ratio_;
-  }
+  release ();
+  bmp_ = new Gdiplus::Bitmap (width_, height_);
 
-private:
-  std::wstring filename_ {g_default_filename};
-  Gdiplus::Bitmap *bmp_ = NULL;
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  off_t size_ = 0;
-  time_t mtime_ = 0;
+  Gdiplus::Graphics offscreen {bmp_};
+  offscreen.DrawImage (&tmp_bmp, 0, 0);
 
-  bitmap_loader (const bitmap_loader&) = delete;
-  bitmap_loader& operator= (const bitmap_loader&) = delete;
-  bitmap_loader (bitmap_loader&&) = default;
-  bitmap_loader& operator= (bitmap_loader&&) = default;
-};
+  size_ = st.st_size;
+  mtime_ = st.st_mtime;
 
-#endif // INCLUDE_GUARD_BITMAP_LOADER_HH
+  if (retval != load_status::same_size)
+    {
+      if (width_ == 0 || height_ == 0)
+        aspect_ratio_ = 0;
+      else
+        aspect_ratio_ = static_cast<double> (width_) / height_;
+    }
+
+  return retval;
+}
+
+void
+bitmap_loader::release (void)
+{
+  if (bmp_)
+    {
+      delete bmp_;
+      bmp_ = NULL;
+    }
+}
