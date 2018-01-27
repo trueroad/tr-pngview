@@ -39,8 +39,6 @@
 
 #include <sys/stat.h>
 
-const wchar_t g_default_filename[] = L"output.png";
-
 namespace Gdiplus
 {
   class Bitmap;
@@ -82,7 +80,7 @@ public:
   }
 
 private:
-  std::wstring filename_ {g_default_filename};
+  std::wstring filename_ {L"output.png"};
   Gdiplus::Bitmap *bmp_ = NULL;
   int width_ = 0;
   int height_ = 0;
