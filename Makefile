@@ -1,3 +1,5 @@
+all: pngview
+
 #
 # Build settings
 #
@@ -68,8 +70,6 @@ LDFLAGS += $(LDFLAGS_STATIC) $(LDFLAGS_WINDOWS) $(LDFLAGS_UNICODE)
 #
 # Rules
 #
-
-all: pngview
 
 clean:
 	$(RM) *~ $(OBJS) $(DEPS)
