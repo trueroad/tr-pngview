@@ -50,10 +50,10 @@ pngview_window::init (HINSTANCE hInstance, int nCmdShow)
 {
   hInst_ = hInstance;
 
-  if (!register_class ())
+  if (!register_class (classname_))
     return false;
 
-  if (!create_window ())
+  if (!create_window (classname_, title_))
     return false;
 
   hmenu_ = GetMenu (hwnd_);

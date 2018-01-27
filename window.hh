@@ -51,18 +51,18 @@ public:
 protected:
   virtual LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
-  bool register_class (void);
-  bool create_window (void);
+  bool register_class (PCTSTR);
+  bool create_window (PCTSTR, PCTSTR);
   void show_and_update_window (int);
-
-  const TCHAR *classname_ {TEXT ("TRPNGVIEW")};
-  const TCHAR *window_title_ {TEXT ("pngview")};
 
   HINSTANCE hInst_ = NULL;
   HWND hwnd_ = NULL;
 
 private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
+
+  const PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
+  const PCTSTR title_ {TEXT ("tr-window")};
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;

@@ -64,6 +64,9 @@ private:
 
   void calc_coordinate (void);
 
+  const PCTSTR classname_ {TEXT ("TRPNGVIEW")};
+  const PCTSTR title_ {TEXT ("pngview")};
+
   HMENU hmenu_ = NULL;
 
   int width_ = 0;
