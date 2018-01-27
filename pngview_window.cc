@@ -67,60 +67,6 @@ pngview_window::init (HINSTANCE hInstance, int nCmdShow)
   return true;
 }
 
-void
-pngview_window::set_stretch_mode (stretch_mode s)
-{
-  if (sm_ != s)
-    {
-      sm_ = s;
-      InvalidateRect (hwnd_, NULL, TRUE);
-    }
-
-  MENUITEMINFO mii {0};
-  mii.cbSize = sizeof (mii);
-  mii.fMask = MIIM_STATE;
-
-  mii.fState = sm_ == stretch_mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED;
-  SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
-
-  mii.fState = sm_ == stretch_mode::fill ? MFS_CHECKED : MFS_UNCHECKED;
-  SetMenuItemInfo (hmenu_, IDM_FILL, FALSE, &mii);
-
-  mii.fState = sm_ == stretch_mode::contain ? MFS_CHECKED : MFS_UNCHECKED;
-  SetMenuItemInfo (hmenu_, IDM_CONTAIN, FALSE, &mii);
-
-  mii.fState = sm_ == stretch_mode::cover ? MFS_CHECKED : MFS_UNCHECKED;
-  SetMenuItemInfo (hmenu_, IDM_COVER, FALSE, &mii);
-
-  DrawMenuBar (hwnd_);
-}
-
-void
-pngview_window::increment_stretch_mode (void)
-{
-  stretch_mode s;
-
-  switch (sm_)
-    {
-    case stretch_mode::dot_by_dot:
-      s = stretch_mode::fill;
-      break;
-    case stretch_mode::fill:
-      s = stretch_mode::contain;
-      break;
-    case stretch_mode::contain:
-      s = stretch_mode::cover;
-      break;
-    case stretch_mode::cover:
-      s = stretch_mode::dot_by_dot;
-      break;
-    default:
-      s = sm_;
-    }
-
-  set_stretch_mode (s);
-}
-
 LRESULT
 pngview_window::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
@@ -261,43 +207,4 @@ pngview_window::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-void
-pngview_window::calc_coordinate (void)
-{
-  auto zoom_ratio_height = static_cast<double> (height_) / bl_.height ();
-  auto bmp_zoomed_width = zoom_ratio_height * bl_.width ();
-
-  auto zoom_ratio_width = static_cast<double> (width_) / bl_.width ();
-  auto bmp_zoomed_height = zoom_ratio_width * bl_.height ();
-
-  if (aspect_ratio_ > bl_.aspect_ratio ())
-    {
-      stretch_contain_x_ = (width_ - bmp_zoomed_width) / 2;
-      stretch_contain_width_ = bmp_zoomed_width;
-
-      stretch_contain_y_ = 0;
-      stretch_contain_height_ = height_;
-
-      stretch_cover_y_ = (height_ - bmp_zoomed_height) / 2;
-      stretch_cover_height_ = bmp_zoomed_height;
-
-      stretch_cover_x_ = 0;
-      stretch_cover_width_ = width_;
-    }
-  else
-    {
-      stretch_contain_y_ = (height_ - bmp_zoomed_height) / 2;
-      stretch_contain_height_ = bmp_zoomed_height;
-
-      stretch_contain_x_ = 0;
-      stretch_contain_width_ = width_;
-
-      stretch_cover_x_ = (width_ - bmp_zoomed_width) / 2;
-      stretch_cover_width_ = bmp_zoomed_width;
-
-      stretch_cover_y_ = 0;
-      stretch_cover_height_ = height_;
-    }
 }
