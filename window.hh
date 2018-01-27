@@ -63,6 +63,9 @@ private:
 
   void calc_coordinate (void);
 
+  const TCHAR *classname_ {TEXT ("TRPNGVIEW")};
+  const TCHAR *window_title_ {TEXT ("pngview")};
+
   HWND hwnd_ = NULL;
   HMENU hmenu_ = NULL;
   int width_ = 0;

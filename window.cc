@@ -44,9 +44,6 @@
 #include "pngview_res.h"
 #include "version.h"
 
-const TCHAR g_classname[] = TEXT ("TRPNGVIEW");
-const TCHAR g_window_title[] = TEXT ("pngview");
-
 bool
 window_class::init (HINSTANCE hInstance, int nCmdShow)
 {
@@ -60,11 +57,11 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
   wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
   wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
   wc.lpszMenuName  = MAKEINTRESOURCE (IDM_MENU);
-  wc.lpszClassName = g_classname;
+  wc.lpszClassName = classname_;
   if (!RegisterClass (&wc))
     return false;
 
-  hwnd_ = CreateWindow (g_classname, g_window_title, WS_OVERLAPPEDWINDOW,
+  hwnd_ = CreateWindow (classname_, window_title_, WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         NULL, NULL, hInstance, this);
