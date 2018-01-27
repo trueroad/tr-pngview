@@ -42,12 +42,7 @@
 
 #include "bitmap_loader.hh"
 #include "pngview_res.h"
-
-const TCHAR g_package[] =
-  TEXT ("tr-pngview 2018-01-25.14\n"
-        "Copyright (C) 2018 Masamichi Hosoda. All rights reserved.\n"
-        "License: BSD-2-Clause\n\n"
-        "https://github.com/trueroad/tr-pngview");
+#include "version.h"
 
 const TCHAR g_classname[] = TEXT ("TRPNGVIEW");
 const TCHAR g_window_title[] = TEXT ("pngview");
@@ -247,7 +242,14 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           set_stretch_mode (stretch_mode::cover);
           break;
         case IDM_ABOUT:
-          MessageBox (hwnd, g_package, TEXT ("About tr-pngview"), MB_OK);
+          MessageBox (hwnd,
+                      TEXT (PACKAGE_NAME) TEXT (" ")
+                      TEXT (PACKAGE_VERSION) TEXT ("\n")
+                      TEXT (PACKAGE_COPYRIGHT) TEXT ("\n")
+                      TEXT (PACKAGE_LICENSE) TEXT ("\n\n")
+                      TEXT (PACKAGE_URL),
+                      TEXT ("About") TEXT (" ") TEXT(PACKAGE_NAME),
+                      MB_OK);
           break;
         case IDM_EXIT:
           SendMessage (hwnd, WM_CLOSE, 0, 0);

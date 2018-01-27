@@ -2,8 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// Periodically read a PNG file and continue to show on a window
-// without tearing and flicker
+// version.h: Version information
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -33,20 +32,18 @@
 // SUCH DAMAGE.
 //
 
-#include <windows.h>
-#include <tchar.h>
+#ifndef INCLUDE_GUARD_VERSION_H
+#define INCLUDE_GUARD_VERSION_H
 
-#include "gdiplus_init.hh"
-#include "window.hh"
+#define PACKAGE_NAME \
+  "tr-pngview"
+#define PACKAGE_VERSION \
+  "2018-01-25.14"
+#define PACKAGE_COPYRIGHT \
+  "Copyright (C) 2018 Masamichi Hosoda. All rights reserved."
+#define PACKAGE_LICENSE \
+  "License: BSD-2-Clause"
+#define PACKAGE_URL \
+  "https://github.com/trueroad/tr-pngview"
 
-int WINAPI
-_tWinMain (HINSTANCE hInstance, HINSTANCE, PTSTR, int nCmdShow)
-{
-  gdiplus_init gi;
-  window_class wincls;
-
-  if (!wincls.init (hInstance, nCmdShow))
-    return 0;
-
-  return wincls.message_loop ();
-}
+#endif // INCLUDE_GUARD_VERSION_H
