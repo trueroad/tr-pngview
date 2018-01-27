@@ -1,9 +1,8 @@
 //
-// tr-pngview 2018-01-25.14
+// tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// Periodically read a PNG file and continue to show on a window
-// without tearing and flicker
+// window.hh: Window class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -33,20 +32,58 @@
 // SUCH DAMAGE.
 //
 
+#ifndef INCLUDE_WINDOW_HH
+#define INCLUDE_WINDOW_HH
+
 #include <windows.h>
-#include <tchar.h>
 
-#include "gdiplus_init.hh"
-#include "window.hh"
+#include "bitmap_loader.hh"
 
-int WINAPI
-_tWinMain (HINSTANCE hInstance, HINSTANCE, PTSTR, int nCmdShow)
+class window_class
 {
-  gdiplus_init gi;
-  window_class wincls;
+  enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
-  if (!wincls.init (hInstance, nCmdShow))
-    return 0;
+public:
+  window_class () = default;
+  ~window_class () = default;
 
-  return wincls.message_loop ();
-}
+  bool init (HINSTANCE, int);
+  int message_loop (void);
+
+  stretch_mode get_stretch_mode (void)
+  {
+    return sm_;
+  }
+  void set_stretch_mode (stretch_mode);
+  void increment_stretch_mode (void);
+
+private:
+  static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
+  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
+
+  void calc_coordinate (void);
+
+  HWND hwnd_ = NULL;
+  HMENU hmenu_ = NULL;
+  int width_ = 0;
+  int height_ = 0;
+  double aspect_ratio_ = 0;
+  int stretch_contain_x_ = 0;
+  int stretch_contain_y_ = 0;
+  int stretch_contain_width_ = 0;
+  int stretch_contain_height_ = 0;
+  int stretch_cover_x_ = 0;
+  int stretch_cover_y_ = 0;
+  int stretch_cover_width_ = 0;
+  int stretch_cover_height_ = 0;
+
+  bitmap_loader bl_;
+  stretch_mode sm_ = stretch_mode::dot_by_dot;
+
+  window_class (const window_class&) = delete;
+  window_class& operator= (const window_class&) = delete;
+  window_class (window_class&&) = default;
+  window_class& operator= (window_class&&) = default;
+};
+
+#endif // INCLUDE_WINDOW_HH
