@@ -54,6 +54,8 @@ public:
   {
     release ();
   }
+  bitmap_loader (bitmap_loader&&) = default;
+  bitmap_loader& operator= (bitmap_loader&&) = default;
 
   load_status load (void);
   void release (void);
@@ -90,8 +92,6 @@ private:
 
   bitmap_loader (const bitmap_loader&) = delete;
   bitmap_loader& operator= (const bitmap_loader&) = delete;
-  bitmap_loader (bitmap_loader&&) = default;
-  bitmap_loader& operator= (bitmap_loader&&) = default;
 };
 
 #endif // INCLUDE_GUARD_BITMAP_LOADER_HH
