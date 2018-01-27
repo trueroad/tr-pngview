@@ -37,12 +37,14 @@
 
 #include <string>
 
-#include <windows.h>
-#include <tchar.h>
-#include <gdiplus.h>
 #include <sys/stat.h>
 
-const WCHAR g_default_filename[] = L"output.png";
+const wchar_t g_default_filename[] = L"output.png";
+
+namespace Gdiplus
+{
+  class Bitmap;
+}
 
 class bitmap_loader
 {

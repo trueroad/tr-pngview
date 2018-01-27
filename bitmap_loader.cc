@@ -37,7 +37,6 @@
 #include <string>
 
 #include <windows.h>
-#include <tchar.h>
 #include <gdiplus.h>
 #include <sys/stat.h>
 

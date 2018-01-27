@@ -38,7 +38,6 @@
 #include <windows.h>
 #include <tchar.h>
 #include <gdiplus.h>
-#include <sys/stat.h>
 
 #include "bitmap_loader.hh"
 #include "gdiplus_init.hh"
