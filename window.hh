@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// window.hh: Window class
+// window.hh: Base window class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -37,12 +37,8 @@
 
 #include <windows.h>
 
-#include "bitmap_loader.hh"
-
 class window_class
 {
-  enum class stretch_mode {dot_by_dot, fill, contain, cover};
-
 public:
   window_class () = default;
   ~window_class () = default;
@@ -52,43 +48,21 @@ public:
   bool init (HINSTANCE, int);
   int message_loop (void);
 
-  stretch_mode get_stretch_mode (void)
-  {
-    return sm_;
-  }
-  void set_stretch_mode (stretch_mode);
-  void increment_stretch_mode (void);
-
-private:
-  static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
-  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
+protected:
+  virtual LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
   bool register_class (void);
   bool create_window (void);
   void show_and_update_window (int);
-
-  void calc_coordinate (void);
 
   const TCHAR *classname_ {TEXT ("TRPNGVIEW")};
   const TCHAR *window_title_ {TEXT ("pngview")};
 
   HINSTANCE hInst_ = NULL;
   HWND hwnd_ = NULL;
-  HMENU hmenu_ = NULL;
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  int stretch_contain_x_ = 0;
-  int stretch_contain_y_ = 0;
-  int stretch_contain_width_ = 0;
-  int stretch_contain_height_ = 0;
-  int stretch_cover_x_ = 0;
-  int stretch_cover_y_ = 0;
-  int stretch_cover_width_ = 0;
-  int stretch_cover_height_ = 0;
 
-  bitmap_loader bl_;
-  stretch_mode sm_ = stretch_mode::dot_by_dot;
+private:
+  static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
