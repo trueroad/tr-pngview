@@ -40,6 +40,7 @@
 #include <gdiplus.h>
 #include <sys/stat.h>
 
+#include "bitmap_loader.hh"
 #include "gdiplus_init.hh"
 #include "pngview_res.h"
 
@@ -51,106 +52,6 @@ const TCHAR g_package[] =
 
 const TCHAR g_classname[] = TEXT ("TRPNGVIEW");
 const TCHAR g_window_title[] = TEXT ("pngview");
-
-const WCHAR g_default_filename[] = L"output.png";
-
-class bitmap_loader
-{
-public:
-  enum class load_status {no_change, same_size, size_changed};
-
-  bitmap_loader () = default;
-  ~bitmap_loader ()
-  {
-    release ();
-  }
-
-  load_status load (void)
-  {
-    struct _stat st;
-    if (_wstat (filename_.c_str (), &st))
-      return load_status::no_change;
-    if (st.st_size == size_ && st.st_mtime == mtime_)
-      return load_status::no_change;
-
-    Gdiplus::Bitmap tmp_bmp {filename_.c_str ()};
-
-    load_status retval = load_status::same_size;
-    auto w = tmp_bmp.GetWidth ();
-    if (w != width_)
-      {
-        width_ = w;
-        retval = load_status::size_changed;
-      }
-    auto h = tmp_bmp.GetHeight ();
-    if (h != height_)
-      {
-        height_ = h;
-        retval = load_status::size_changed;
-      }
-
-    release ();
-    bmp_ = new Gdiplus::Bitmap (width_, height_);
-
-    Gdiplus::Graphics offscreen {bmp_};
-    offscreen.DrawImage (&tmp_bmp, 0, 0);
-
-    size_ = st.st_size;
-    mtime_ = st.st_mtime;
-
-    if (retval != load_status::same_size)
-      {
-        if (width_ == 0 || height_ == 0)
-          aspect_ratio_ = 0;
-        else
-          aspect_ratio_ = static_cast<double> (width_) / height_;
-      }
-
-    return retval;
-  }
-  void release (void)
-  {
-    if (bmp_)
-      {
-        delete bmp_;
-        bmp_ = NULL;
-      }
-  }
-  void set_filename (const std::wstring &s)
-  {
-    filename_ = s;
-  }
-  Gdiplus::Bitmap *get (void)
-  {
-    return bmp_;
-  }
-  int width (void)
-  {
-    return width_;
-  }
-  int height (void)
-  {
-    return height_;
-  }
-  double aspect_ratio (void)
-  {
-    return aspect_ratio_;
-  }
-
-private:
-  std::wstring filename_ {g_default_filename};
-  Gdiplus::Bitmap *bmp_ = NULL;
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  off_t size_ = 0;
-  time_t mtime_ = 0;
-
-  bitmap_loader (const bitmap_loader&) = delete;
-  bitmap_loader& operator= (const bitmap_loader&) = delete;
-  bitmap_loader (bitmap_loader&&) = default;
-  bitmap_loader& operator= (bitmap_loader&&) = default;
-};
 
 class window_class
 {
