@@ -47,25 +47,12 @@
 bool
 window_class::init (HINSTANCE hInstance, int nCmdShow)
 {
-  WNDCLASS wc;
-  wc.style         = CS_HREDRAW | CS_VREDRAW;
-  wc.lpfnWndProc   = wndproc_static;
-  wc.cbClsExtra    = 0;
-  wc.cbWndExtra    = 0;
-  wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon (NULL, IDI_APPLICATION);
-  wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
-  wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
-  wc.lpszMenuName  = MAKEINTRESOURCE (IDM_MENU);
-  wc.lpszClassName = classname_;
-  if (!RegisterClass (&wc))
+  hInst_ = hInstance;
+
+  if (!register_class ())
     return false;
 
-  hwnd_ = CreateWindow (classname_, window_title_, WS_OVERLAPPEDWINDOW,
-                        CW_USEDEFAULT, CW_USEDEFAULT,
-                        CW_USEDEFAULT, CW_USEDEFAULT,
-                        NULL, NULL, hInstance, this);
-  if (!hwnd_)
+  if (!create_window ())
     return false;
 
   hmenu_ = GetMenu (hwnd_);
@@ -74,8 +61,7 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
 
   DragAcceptFiles (hwnd_, TRUE);
 
-  ShowWindow (hwnd_, nCmdShow);
-  UpdateWindow (hwnd_);
+  show_and_update_window (nCmdShow);
 
   return true;
 }
@@ -311,6 +297,49 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
+}
+
+bool
+window_class::register_class (void)
+{
+  WNDCLASS wc;
+
+  wc.style         = CS_HREDRAW | CS_VREDRAW;
+  wc.lpfnWndProc   = wndproc_static;
+  wc.cbClsExtra    = 0;
+  wc.cbWndExtra    = 0;
+  wc.hInstance     = hInst_;
+  wc.hIcon         = LoadIcon (NULL, IDI_APPLICATION);
+  wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
+  wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
+  wc.lpszMenuName  = MAKEINTRESOURCE (IDM_MENU);
+  wc.lpszClassName = classname_;
+
+  if (!RegisterClass (&wc))
+    return false;
+
+  return true;
+}
+
+bool
+window_class::create_window (void)
+{
+  hwnd_ = CreateWindow (classname_, window_title_, WS_OVERLAPPEDWINDOW,
+                        CW_USEDEFAULT, CW_USEDEFAULT,
+                        CW_USEDEFAULT, CW_USEDEFAULT,
+                        NULL, NULL, hInst_, this);
+
+  if (!hwnd_)
+    return false;
+
+  return true;
+}
+
+void
+window_class::show_and_update_window (int nCmdShow)
+{
+  ShowWindow (hwnd_, nCmdShow);
+  UpdateWindow (hwnd_);
 }
 
 void

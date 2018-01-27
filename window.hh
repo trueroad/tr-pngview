@@ -63,11 +63,16 @@ private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
+  bool register_class (void);
+  bool create_window (void);
+  void show_and_update_window (int);
+
   void calc_coordinate (void);
 
   const TCHAR *classname_ {TEXT ("TRPNGVIEW")};
   const TCHAR *window_title_ {TEXT ("pngview")};
 
+  HINSTANCE hInst_ = NULL;
   HWND hwnd_ = NULL;
   HMENU hmenu_ = NULL;
   int width_ = 0;
