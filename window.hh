@@ -37,6 +37,7 @@
 
 #include <windows.h>
 
+template <class Derived>
 class window_class
 {
 public:
@@ -49,7 +50,7 @@ public:
   int message_loop (void);
 
 protected:
-  virtual LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
+  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
   PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
   PCTSTR title_ {TEXT ("tr-window")};
@@ -67,5 +68,7 @@ private:
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
 };
+
+#include "window_private.hh"
 
 #endif // INCLUDE_WINDOW_HH

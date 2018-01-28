@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// window.cc: Base window class
+// window_private.hh: Base window class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,12 +32,9 @@
 // SUCH DAMAGE.
 //
 
-#include "window.hh"
-
-#include <windows.h>
-
+template <class Derived>
 bool
-window_class::init (HINSTANCE hInstance, int nCmdShow)
+window_class<Derived>::init (HINSTANCE hInstance, int nCmdShow)
 {
   hInst_ = hInstance;
 
@@ -52,8 +49,9 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
   return true;
 }
 
+template <class Derived>
 int
-window_class::message_loop (void)
+window_class<Derived>::message_loop (void)
 {
   MSG msg;
   while (GetMessage (&msg, NULL, 0, 0))
@@ -65,19 +63,21 @@ window_class::message_loop (void)
   return msg.wParam;
 }
 
+template <class Derived>
 LRESULT CALLBACK
-window_class::wndproc_static (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+window_class<Derived>::wndproc_static (HWND hwnd, UINT uMsg,
+                                       WPARAM wParam, LPARAM lParam)
 {
-  window_class *wc;
+  Derived *wc;
   if (uMsg == WM_NCCREATE)
     {
-      wc = reinterpret_cast<window_class*>
+      wc = reinterpret_cast<Derived*>
         ((reinterpret_cast<LPCREATESTRUCT> (lParam))->lpCreateParams);
       SetWindowLongPtr (hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR> (wc));
     }
   else
     {
-      wc = reinterpret_cast<window_class*>
+      wc = reinterpret_cast<Derived*>
         (GetWindowLongPtr (hwnd, GWLP_USERDATA));
     }
 
@@ -89,14 +89,16 @@ window_class::wndproc_static (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
+template <class Derived>
 LRESULT
-window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+window_class<Derived>::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
+template <class Derived>
 bool
-window_class::register_class (void)
+window_class<Derived>::register_class (void)
 {
   WNDCLASS wc;
 
@@ -117,8 +119,9 @@ window_class::register_class (void)
   return true;
 }
 
+template <class Derived>
 bool
-window_class::create_window (void)
+window_class<Derived>::create_window (void)
 {
   hwnd_ = CreateWindow (classname_, title_, WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
@@ -131,8 +134,9 @@ window_class::create_window (void)
   return true;
 }
 
+template <class Derived>
 void
-window_class::show_and_update_window (int nCmdShow)
+window_class<Derived>::show_and_update_window (int nCmdShow)
 {
   ShowWindow (hwnd_, nCmdShow);
   UpdateWindow (hwnd_);

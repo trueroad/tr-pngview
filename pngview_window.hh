@@ -40,7 +40,7 @@
 #include "window.hh"
 #include "bitmap_loader.hh"
 
-class pngview_window: public window_class
+class pngview_window: public window_class<pngview_window>
 {
   enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
@@ -54,6 +54,8 @@ public:
   pngview_window (pngview_window&&) = default;
   pngview_window& operator= (pngview_window&&) = default;
 
+  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
+
   stretch_mode get_stretch_mode (void)
   {
     return sm_;
@@ -62,8 +64,6 @@ public:
   void increment_stretch_mode (void);
 
 private:
-  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
-
   LRESULT WmPaint (HWND);
   LRESULT WmTimer (HWND, WPARAM, LPARAM);
   LRESULT WmLbuttondown (HWND, WPARAM, LPARAM);
