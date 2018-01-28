@@ -37,10 +37,10 @@
 
 #include <windows.h>
 
-#include "window.hh"
+#include "hideable_menu.hh"
 #include "bitmap_loader.hh"
 
-class pngview_window: public window_class<pngview_window>
+class pngview_window: public hideable_menu<pngview_window>
 {
   enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
@@ -57,8 +57,6 @@ public:
     procedures_[WM_SIZE] = WmSize;
     procedures_[WM_DROPFILES] = WmDropfiles;
     procedures_[WM_MOUSEACTIVATE] = WmMouseactivate;
-    procedures_[WM_SYSCOMMAND] = WmSyscommand;
-    procedures_[WM_EXITMENULOOP] = WmExitmenuloop;
     procedures_[WM_CREATE] = WmCreate;
     procedures_[WM_DESTROY] = WmDestroy;
   }
@@ -81,8 +79,6 @@ private:
   LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmMouseactivate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmExitmenuloop (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
@@ -91,8 +87,6 @@ private:
   const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
   const PCTSTR pngview_title_ {TEXT ("pngview")};
   const UINT_PTR timerid_ = 1;
-
-  HMENU hmenu_ = NULL;
 
   int width_ = 0;
   int height_ = 0;

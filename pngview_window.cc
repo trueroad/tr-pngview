@@ -180,32 +180,10 @@ pngview_window::WmMouseactivate (HWND hwnd, UINT, WPARAM, LPARAM lParam)
 }
 
 LRESULT
-pngview_window::WmSyscommand (HWND hwnd, UINT uMsg,
-                              WPARAM wParam, LPARAM lParam)
+pngview_window::WmCreate (HWND hwnd, UINT uMsg,
+                          WPARAM wParam, LPARAM lParam)
 {
-  if (wParam == SC_KEYMENU)
-    {
-      SetMenu (hwnd, hmenu_);
-      InvalidateRect (hwnd, NULL, TRUE);
-    }
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmExitmenuloop (HWND hwnd, UINT uMsg,
-                                WPARAM wParam, LPARAM lParam)
-{
-  SetMenu (hwnd, NULL);
-  InvalidateRect (hwnd, NULL, TRUE);
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmCreate (HWND hwnd, UINT, WPARAM, LPARAM)
-{
-  hmenu_ = LoadMenu (hInst_, MAKEINTRESOURCE (IDM_MENU));
+  hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
   set_stretch_mode (sm_);
 
   DragAcceptFiles (hwnd, TRUE);
@@ -219,16 +197,14 @@ pngview_window::WmCreate (HWND hwnd, UINT, WPARAM, LPARAM)
 }
 
 LRESULT
-pngview_window::WmDestroy (HWND hwnd, UINT, WPARAM, LPARAM)
+pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
+                           WPARAM wParam, LPARAM lParam)
 {
   KillTimer (hwnd, timerid_);
 
   bl_.release ();
 
-  DestroyMenu (hmenu_);
-  hmenu_ = NULL;
-
-  PostQuitMessage (0);
+  hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
 
   return 0;
 }
