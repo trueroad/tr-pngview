@@ -83,16 +83,11 @@ window_class<Derived>::wndproc_static (HWND hwnd, UINT uMsg,
 
   if (wc)
     {
-      return wc->wndproc (hwnd, uMsg, wParam, lParam);
+      auto val = wc->procedures_.find (uMsg);
+      if (val != wc->procedures_.end ())
+        return (wc->*(val->second)) (hwnd, uMsg, wParam, lParam);
     }
 
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-template <class Derived>
-LRESULT
-window_class<Derived>::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
-{
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 

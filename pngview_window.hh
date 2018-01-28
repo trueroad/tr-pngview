@@ -49,12 +49,22 @@ public:
   {
     classname_ = pngview_classname_;
     title_ = pngview_title_;
+
+    procedures_[WM_PAINT] = WmPaint;
+    procedures_[WM_TIMER] = WmTimer;
+    procedures_[WM_LBUTTONDOWN] = WmLbuttondown;
+    procedures_[WM_COMMAND] = WmCommand;
+    procedures_[WM_SIZE] = WmSize;
+    procedures_[WM_DROPFILES] = WmDropfiles;
+    procedures_[WM_MOUSEACTIVATE] = WmMouseactivate;
+    procedures_[WM_SYSCOMMAND] = WmSyscommand;
+    procedures_[WM_EXITMENULOOP] = WmExitmenuloop;
+    procedures_[WM_CREATE] = WmCreate;
+    procedures_[WM_DESTROY] = WmDestroy;
   }
   ~pngview_window () = default;
   pngview_window (pngview_window&&) = default;
   pngview_window& operator= (pngview_window&&) = default;
-
-  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
   stretch_mode get_stretch_mode (void)
   {
@@ -64,17 +74,17 @@ public:
   void increment_stretch_mode (void);
 
 private:
-  LRESULT WmPaint (HWND);
-  LRESULT WmTimer (HWND, WPARAM, LPARAM);
-  LRESULT WmLbuttondown (HWND, WPARAM, LPARAM);
-  LRESULT WmCommand (HWND, WPARAM, LPARAM);
-  void WmSize (HWND, WPARAM, LPARAM);
-  void WmDropfiles (HWND, WPARAM);
-  LRESULT WmMouseactive (HWND, WPARAM, LPARAM);
-  void WmSyscommand (HWND, WPARAM, LPARAM);
-  void WmExitmenuloop (HWND, WPARAM);
-  LRESULT WmCreate (HWND, LPARAM);
-  LRESULT WmDestroy (HWND);
+  LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmLbuttondown (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmCommand (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmMouseactivate (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmExitmenuloop (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
   void calc_coordinate (void);
 

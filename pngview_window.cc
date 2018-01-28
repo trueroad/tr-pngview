@@ -43,8 +43,8 @@
 #include "pngview_res.h"
 #include "version.h"
 
-inline LRESULT
-pngview_window::WmPaint (HWND hwnd)
+LRESULT
+pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   PAINTSTRUCT ps;
   HDC hdc = BeginPaint (hwnd, &ps);
@@ -77,8 +77,8 @@ pngview_window::WmPaint (HWND hwnd)
   return 0;
 }
 
-inline LRESULT
-pngview_window::WmTimer (HWND hwnd, WPARAM wParam, LPARAM)
+LRESULT
+pngview_window::WmTimer (HWND hwnd, UINT, WPARAM wParam, LPARAM)
 {
   if (static_cast<UINT_PTR> (wParam) == timerid_)
     {
@@ -94,15 +94,15 @@ pngview_window::WmTimer (HWND hwnd, WPARAM wParam, LPARAM)
   return 0;
 }
 
-inline LRESULT
-pngview_window::WmLbuttondown (HWND hwnd, WPARAM, LPARAM)
+LRESULT
+pngview_window::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   increment_stretch_mode ();
   return 0;
 }
 
-inline LRESULT
-pngview_window::WmCommand (HWND hwnd, WPARAM wParam, LPARAM)
+LRESULT
+pngview_window::WmCommand (HWND hwnd, UINT, WPARAM wParam, LPARAM)
 {
   switch (LOWORD (wParam))
     {
@@ -135,8 +135,8 @@ pngview_window::WmCommand (HWND hwnd, WPARAM wParam, LPARAM)
   return 0;
 }
 
-inline void
-pngview_window::WmSize (HWND hwnd, WPARAM, LPARAM lParam)
+LRESULT
+pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   width_ = LOWORD (lParam);
   height_ = HIWORD (lParam);
@@ -145,10 +145,13 @@ pngview_window::WmSize (HWND hwnd, WPARAM, LPARAM lParam)
   else
     aspect_ratio_ = static_cast<double> (width_) / height_;
   calc_coordinate ();
+
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
-inline void
-pngview_window::WmDropfiles (HWND hwnd, WPARAM wParam)
+LRESULT
+pngview_window::WmDropfiles (HWND hwnd, UINT uMsg,
+                             WPARAM wParam, LPARAM lParam)
 {
   {
     std::wstring buff;
@@ -160,38 +163,47 @@ pngview_window::WmDropfiles (HWND hwnd, WPARAM wParam)
 
     bl_.set_filename (buff);
   }
+
   bl_.load ();
   calc_coordinate ();
   InvalidateRect (hwnd, NULL, TRUE);
+
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
-inline LRESULT
-pngview_window::WmMouseactive (HWND hwnd, WPARAM, LPARAM lParam)
+LRESULT
+pngview_window::WmMouseactivate (HWND hwnd, UINT, WPARAM, LPARAM lParam)
 {
   if (HIWORD (lParam) == WM_LBUTTONDOWN && LOWORD (lParam) == HTCLIENT)
     return MA_ACTIVATEANDEAT;
   return MA_ACTIVATE;
 }
 
-inline void
-pngview_window::WmSyscommand (HWND hwnd, WPARAM wParam, LPARAM)
+LRESULT
+pngview_window::WmSyscommand (HWND hwnd, UINT uMsg,
+                              WPARAM wParam, LPARAM lParam)
 {
   if (wParam == SC_KEYMENU)
     {
       SetMenu (hwnd, hmenu_);
       InvalidateRect (hwnd, NULL, TRUE);
     }
+
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
-inline void
-pngview_window::WmExitmenuloop (HWND hwnd, WPARAM)
+LRESULT
+pngview_window::WmExitmenuloop (HWND hwnd, UINT uMsg,
+                                WPARAM wParam, LPARAM lParam)
 {
   SetMenu (hwnd, NULL);
   InvalidateRect (hwnd, NULL, TRUE);
+
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
-inline LRESULT
-pngview_window::WmCreate (HWND hwnd, LPARAM)
+LRESULT
+pngview_window::WmCreate (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   hmenu_ = LoadMenu (hInst_, MAKEINTRESOURCE (IDM_MENU));
   set_stretch_mode (sm_);
@@ -206,8 +218,8 @@ pngview_window::WmCreate (HWND hwnd, LPARAM)
   return 0;
 }
 
-inline LRESULT
-pngview_window::WmDestroy (HWND hwnd)
+LRESULT
+pngview_window::WmDestroy (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   KillTimer (hwnd, timerid_);
 
@@ -219,50 +231,4 @@ pngview_window::WmDestroy (HWND hwnd)
   PostQuitMessage (0);
 
   return 0;
-}
-
-LRESULT
-pngview_window::wndproc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  switch (uMsg)
-    {
-    case WM_PAINT:
-      return WmPaint (hwnd);
-
-    case WM_TIMER:
-      return WmTimer (hwnd, wParam, lParam);
-
-    case WM_LBUTTONDOWN:
-      return WmLbuttondown (hwnd, wParam, lParam);
-
-    case WM_COMMAND:
-      return WmCommand (hwnd, wParam, lParam);
-
-    case WM_SIZE:
-      WmSize (hwnd, wParam, lParam);
-      break;
-
-    case WM_DROPFILES:
-      WmDropfiles (hwnd, wParam);
-      break;
-
-    case WM_MOUSEACTIVATE:
-      return WmMouseactive (hwnd, wParam, lParam);
-
-    case WM_SYSCOMMAND:
-      WmSyscommand (hwnd, wParam, lParam);
-      break;
-
-    case WM_EXITMENULOOP:
-      WmExitmenuloop (hwnd, wParam);
-      break;
-
-    case WM_CREATE:
-      return WmCreate (hwnd, lParam);
-
-    case WM_DESTROY :
-      return WmDestroy (hwnd);
-    }
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }

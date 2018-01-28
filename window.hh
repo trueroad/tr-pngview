@@ -35,11 +35,15 @@
 #ifndef INCLUDE_WINDOW_HH
 #define INCLUDE_WINDOW_HH
 
+#include <unordered_map>
+
 #include <windows.h>
 
 template <class Derived>
 class window_class
 {
+  using procedure = LRESULT (Derived::*) (HWND, UINT, WPARAM, LPARAM);
+
 public:
   window_class () = default;
   ~window_class () = default;
@@ -50,7 +54,7 @@ public:
   int message_loop (void);
 
 protected:
-  LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
+  std::unordered_map<UINT, procedure> procedures_;
 
   PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
   PCTSTR title_ {TEXT ("tr-window")};
