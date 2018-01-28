@@ -37,10 +37,8 @@
 #include <string>
 
 #include <windows.h>
-#include <tchar.h>
 #include <gdiplus.h>
 
-#include "window.hh"
 #include "bitmap_loader.hh"
 #include "pngview_res.h"
 #include "version.h"

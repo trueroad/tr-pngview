@@ -34,12 +34,7 @@
 
 #include "window.hh"
 
-#include <string>
-
 #include <windows.h>
-#include <tchar.h>
-
-#include "pngview_res.h"
 
 bool
 window_class::init (HINSTANCE hInstance, int nCmdShow)
