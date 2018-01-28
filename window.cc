@@ -46,10 +46,10 @@ window_class::init (HINSTANCE hInstance, int nCmdShow)
 {
   hInst_ = hInstance;
 
-  if (!register_class (classname_))
+  if (!register_class ())
     return false;
 
-  if (!create_window (classname_, title_))
+  if (!create_window ())
     return false;
 
   show_and_update_window (nCmdShow);
@@ -101,7 +101,7 @@ window_class::wndproc (HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 }
 
 bool
-window_class::register_class (PCTSTR classname)
+window_class::register_class (void)
 {
   WNDCLASS wc;
 
@@ -114,7 +114,7 @@ window_class::register_class (PCTSTR classname)
   wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
   wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
   wc.lpszMenuName  = NULL;
-  wc.lpszClassName = classname;
+  wc.lpszClassName = classname_;
 
   if (!RegisterClass (&wc))
     return false;
@@ -123,9 +123,9 @@ window_class::register_class (PCTSTR classname)
 }
 
 bool
-window_class::create_window (PCTSTR classname, PCTSTR title)
+window_class::create_window (void)
 {
-  hwnd_ = CreateWindow (classname, title, WS_OVERLAPPEDWINDOW,
+  hwnd_ = CreateWindow (classname_, title_, WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         NULL, NULL, hInst_, this);

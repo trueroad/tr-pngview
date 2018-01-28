@@ -45,22 +45,6 @@
 #include "pngview_res.h"
 #include "version.h"
 
-bool
-pngview_window::init (HINSTANCE hInstance, int nCmdShow)
-{
-  hInst_ = hInstance;
-
-  if (!register_class (classname_))
-    return false;
-
-  if (!create_window (classname_, title_))
-    return false;
-
-  show_and_update_window (nCmdShow);
-
-  return true;
-}
-
 inline LRESULT
 pngview_window::WmPaint (HWND hwnd)
 {

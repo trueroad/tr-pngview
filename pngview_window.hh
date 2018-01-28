@@ -45,12 +45,14 @@ class pngview_window: public window_class
   enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
 public:
-  pngview_window () = default;
+  pngview_window ()
+  {
+    classname_ = pngview_classname_;
+    title_ = pngview_title_;
+  }
   ~pngview_window () = default;
   pngview_window (pngview_window&&) = default;
   pngview_window& operator= (pngview_window&&) = default;
-
-  bool init (HINSTANCE, int);
 
   stretch_mode get_stretch_mode (void)
   {
@@ -76,8 +78,8 @@ private:
 
   void calc_coordinate (void);
 
-  const PCTSTR classname_ {TEXT ("TRPNGVIEW")};
-  const PCTSTR title_ {TEXT ("pngview")};
+  const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
+  const PCTSTR pngview_title_ {TEXT ("pngview")};
   const UINT_PTR timerid_ = 1;
 
   HMENU hmenu_ = NULL;
