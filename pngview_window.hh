@@ -62,6 +62,18 @@ public:
 private:
   LRESULT wndproc (HWND, UINT, WPARAM, LPARAM);
 
+  LRESULT WmPaint (HWND);
+  LRESULT WmTimer (HWND, WPARAM, LPARAM);
+  LRESULT WmLbuttondown (HWND, WPARAM, LPARAM);
+  LRESULT WmCommand (HWND, WPARAM, LPARAM);
+  void WmSize (HWND, WPARAM, LPARAM);
+  void WmDropfiles (HWND, WPARAM);
+  LRESULT WmMouseactive (HWND, WPARAM, LPARAM);
+  void WmSyscommand (HWND, WPARAM, LPARAM);
+  void WmExitmenuloop (HWND, WPARAM);
+  LRESULT WmCreate (HWND, LPARAM);
+  LRESULT WmDestroy (HWND);
+
   void calc_coordinate (void);
 
   const PCTSTR classname_ {TEXT ("TRPNGVIEW")};
