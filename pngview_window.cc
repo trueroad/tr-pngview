@@ -186,7 +186,7 @@ pngview_window::WmDropfiles (HWND hwnd, WPARAM wParam)
 inline LRESULT
 pngview_window::WmMouseactive (HWND hwnd, WPARAM, LPARAM lParam)
 {
-  if (HIWORD (lParam) == WM_LBUTTONDOWN)
+  if (HIWORD (lParam) == WM_LBUTTONDOWN && LOWORD (lParam) == HTCLIENT)
     return MA_ACTIVATEANDEAT;
   return MA_ACTIVATE;
 }
