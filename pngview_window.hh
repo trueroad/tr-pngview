@@ -62,8 +62,6 @@ public:
     procedures_[WM_DESTROY] = WmDestroy;
   }
   ~pngview_window () = default;
-  pngview_window (pngview_window&&) = default;
-  pngview_window& operator= (pngview_window&&) = default;
 
   stretch_mode get_stretch_mode (void)
   {
@@ -105,6 +103,8 @@ private:
 
   pngview_window (const pngview_window&) = delete;
   pngview_window& operator= (const pngview_window&) = delete;
+  pngview_window (pngview_window&&) = delete;
+  pngview_window& operator= (pngview_window&&) = delete;
 };
 
 #endif // INCLUDE_PNGVIEW_WINDOW_HH

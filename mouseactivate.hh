@@ -48,8 +48,6 @@ public:
     this->procedures_[WM_MOUSEACTIVATE] = WmMouseactivate;
   }
   ~mouseactivate () = default;
-  mouseactivate (mouseactivate&&) = default;
-  mouseactivate& operator= (mouseactivate&&) = default;
 
 protected:
   LRESULT WmMouseactivate (HWND, UINT, WPARAM, LPARAM);
@@ -57,6 +55,8 @@ protected:
 private:
   mouseactivate (const mouseactivate&) = delete;
   mouseactivate& operator= (const mouseactivate&) = delete;
+  mouseactivate (mouseactivate&&) = delete;
+  mouseactivate& operator= (mouseactivate&&) = delete;
 };
 
 #include "mouseactivate_private.hh"

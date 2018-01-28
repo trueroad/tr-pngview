@@ -51,8 +51,6 @@ public:
     this->procedures_[WM_DESTROY] = WmDestroy;
   }
   ~hideable_menu () = default;
-  hideable_menu (hideable_menu&&) = default;
-  hideable_menu& operator= (hideable_menu&&) = default;
 
 protected:
   LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
@@ -65,6 +63,8 @@ protected:
 private:
   hideable_menu (const hideable_menu&) = delete;
   hideable_menu& operator= (const hideable_menu&) = delete;
+  hideable_menu (hideable_menu&&) = delete;
+  hideable_menu& operator= (hideable_menu&&) = delete;
 };
 
 #include "hideable_menu_private.hh"

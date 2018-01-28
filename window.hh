@@ -47,8 +47,6 @@ class window_class
 public:
   window_class () = default;
   ~window_class () = default;
-  window_class (window_class&&) = default;
-  window_class& operator= (window_class&&) = default;
 
   bool init (HINSTANCE, int);
   int message_loop (void);
@@ -71,6 +69,8 @@ private:
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;
+  window_class (window_class&&) = delete;
+  window_class& operator= (window_class&&) = delete;
 };
 
 #include "window_private.hh"
