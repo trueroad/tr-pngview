@@ -156,7 +156,7 @@ pngview_window::WmDropfiles (HWND hwnd, WPARAM wParam)
     std::wstring buff;
     HDROP hd = reinterpret_cast<HDROP> (wParam);
 
-    buff.resize (DragQueryFile (hd, 0, NULL, 0) + 1);
+    buff.resize (DragQueryFileW (hd, 0, NULL, 0) + 1);
     DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
     DragFinish (hd);
 
