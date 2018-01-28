@@ -113,7 +113,7 @@ window_class::register_class (PCTSTR classname)
   wc.hIcon         = LoadIcon (NULL, IDI_APPLICATION);
   wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
   wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
-  wc.lpszMenuName  = MAKEINTRESOURCE (IDM_MENU);
+  wc.lpszMenuName  = NULL;
   wc.lpszClassName = classname;
 
   if (!RegisterClass (&wc))

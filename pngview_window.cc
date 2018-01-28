@@ -56,12 +56,6 @@ pngview_window::init (HINSTANCE hInstance, int nCmdShow)
   if (!create_window (classname_, title_))
     return false;
 
-  hmenu_ = GetMenu (hwnd_);
-  SetMenu (hwnd_, NULL);
-  set_stretch_mode (sm_);
-
-  DragAcceptFiles (hwnd_, TRUE);
-
   show_and_update_window (nCmdShow);
 
   return true;
@@ -214,9 +208,16 @@ pngview_window::WmExitmenuloop (HWND hwnd, WPARAM)
 inline LRESULT
 pngview_window::WmCreate (HWND hwnd, LPARAM)
 {
+  hmenu_ = LoadMenu (hInst_, MAKEINTRESOURCE (IDM_MENU));
+  set_stretch_mode (sm_);
+
+  DragAcceptFiles (hwnd, TRUE);
+
   bl_.load ();
   calc_coordinate ();
+
   SetTimer (hwnd , 1 , 100 , NULL); // 100 ms
+
   return 0;
 }
 
@@ -224,7 +225,12 @@ inline LRESULT
 pngview_window::WmDestroy (HWND hwnd)
 {
   bl_.release ();
+
+  DestroyMenu (hmenu_);
+  hmenu_ = NULL;
+
   PostQuitMessage (0);
+
   return 0;
 }
 
