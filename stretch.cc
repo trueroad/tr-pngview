@@ -44,7 +44,8 @@ pngview_window::set_stretch_mode (stretch_mode s)
   if (sm_ != s)
     {
       sm_ = s;
-      InvalidateRect (hwnd_, NULL, TRUE);
+      if (hwnd_)
+        InvalidateRect (hwnd_, NULL, TRUE);
     }
 
   MENUITEMINFO mii {0};
@@ -63,7 +64,8 @@ pngview_window::set_stretch_mode (stretch_mode s)
   mii.fState = sm_ == stretch_mode::cover ? MFS_CHECKED : MFS_UNCHECKED;
   SetMenuItemInfo (hmenu_, IDM_COVER, FALSE, &mii);
 
-  DrawMenuBar (hwnd_);
+  if (hwnd_)
+    DrawMenuBar (hwnd_);
 }
 
 void
