@@ -96,15 +96,18 @@ pngview_window::WmPaint (HWND hwnd)
 }
 
 inline LRESULT
-pngview_window::WmTimer (HWND hwnd, WPARAM, LPARAM)
+pngview_window::WmTimer (HWND hwnd, WPARAM wParam, LPARAM)
 {
-  switch (bl_.load ())
+  if (static_cast<UINT_PTR> (wParam) == timerid_)
     {
-    case bitmap_loader::load_status::size_changed:
-      calc_coordinate ();
-      // no break
-    case bitmap_loader::load_status::same_size:
-      InvalidateRect (hwnd, NULL, FALSE);
+      switch (bl_.load ())
+        {
+        case bitmap_loader::load_status::size_changed:
+          calc_coordinate ();
+          // no break
+        case bitmap_loader::load_status::same_size:
+          InvalidateRect (hwnd, NULL, FALSE);
+        }
     }
   return 0;
 }
@@ -216,7 +219,7 @@ pngview_window::WmCreate (HWND hwnd, LPARAM)
   bl_.load ();
   calc_coordinate ();
 
-  SetTimer (hwnd , 1 , 100 , NULL); // 100 ms
+  SetTimer (hwnd , timerid_ , 100 , NULL); // 100 ms
 
   return 0;
 }
@@ -224,6 +227,8 @@ pngview_window::WmCreate (HWND hwnd, LPARAM)
 inline LRESULT
 pngview_window::WmDestroy (HWND hwnd)
 {
+  KillTimer (hwnd, timerid_);
+
   bl_.release ();
 
   DestroyMenu (hmenu_);

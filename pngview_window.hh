@@ -78,6 +78,7 @@ private:
 
   const PCTSTR classname_ {TEXT ("TRPNGVIEW")};
   const PCTSTR title_ {TEXT ("pngview")};
+  const UINT_PTR timerid_ = 1;
 
   HMENU hmenu_ = NULL;
 
