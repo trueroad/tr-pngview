@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// hideable_menu.hh: Hideable menu class
+// mouseactivate_private.hh: Mouse activate class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,41 +32,12 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_HIDEABLE_MENU_HH
-#define INCLUDE_HIDEABLE_MENU_HH
-
-#include <windows.h>
-
-#include "window.hh"
-
 template <class Derived>
-class hideable_menu: virtual public window_class<Derived>
+LRESULT
+mouseactivate<Derived>::WmMouseactivate (HWND hwnd, UINT,
+                                         WPARAM, LPARAM lParam)
 {
-public:
-  hideable_menu ()
-  {
-    this->procedures_[WM_SYSCOMMAND] = WmSyscommand;
-    this->procedures_[WM_EXITMENULOOP] = WmExitmenuloop;
-    this->procedures_[WM_CREATE] = WmCreate;
-    this->procedures_[WM_DESTROY] = WmDestroy;
-  }
-  ~hideable_menu () = default;
-  hideable_menu (hideable_menu&&) = default;
-  hideable_menu& operator= (hideable_menu&&) = default;
-
-protected:
-  LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmExitmenuloop (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
-
-  HMENU hmenu_ = NULL;
-
-private:
-  hideable_menu (const hideable_menu&) = delete;
-  hideable_menu& operator= (const hideable_menu&) = delete;
-};
-
-#include "hideable_menu_private.hh"
-
-#endif // INCLUDE_HIDEABLE_MENU_HH
+  if (HIWORD (lParam) == WM_LBUTTONDOWN && LOWORD (lParam) == HTCLIENT)
+    return MA_ACTIVATEANDEAT;
+  return MA_ACTIVATE;
+}
