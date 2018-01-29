@@ -121,7 +121,7 @@ window_class<Derived>::create_window (void)
   hwnd_ = CreateWindow (classname_, title_, WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         CW_USEDEFAULT, CW_USEDEFAULT,
-                        NULL, NULL, hInst_, this);
+                        NULL, NULL, hInst_, dynamic_cast<Derived*> (this));
 
   if (!hwnd_)
     return false;

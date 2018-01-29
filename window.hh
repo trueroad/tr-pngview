@@ -46,7 +46,7 @@ class window_class
 
 public:
   window_class () = default;
-  ~window_class () = default;
+  virtual ~window_class () = default;
   window_class (window_class&&) = default;
   window_class& operator= (window_class&&) = default;
 
