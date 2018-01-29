@@ -52,7 +52,10 @@ public:
   int message_loop (void);
 
 protected:
-  std::unordered_map<UINT, procedure> procedures_;
+  void add_procedure (UINT uMsg, procedure proc)
+  {
+    procedures_[uMsg] = proc;
+  }
 
   PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
   PCTSTR title_ {TEXT ("tr-window")};
@@ -66,6 +69,8 @@ protected:
 
 private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
+
+  std::unordered_map<UINT, procedure> procedures_;
 
   window_class (const window_class&) = delete;
   window_class& operator= (const window_class&) = delete;

@@ -50,15 +50,15 @@ public:
     classname_ = pngview_classname_;
     title_ = pngview_title_;
 
-    procedures_[WM_PAINT] = WmPaint;
-    procedures_[WM_TIMER] = WmTimer;
-    procedures_[WM_LBUTTONDOWN] = WmLbuttondown;
-    procedures_[WM_COMMAND] = WmCommand;
-    procedures_[WM_SIZE] = WmSize;
-    procedures_[WM_DROPFILES] = WmDropfiles;
-    procedures_[WM_MOUSEACTIVATE] = WmMouseactivate;
-    procedures_[WM_CREATE] = WmCreate;
-    procedures_[WM_DESTROY] = WmDestroy;
+    add_procedure (WM_PAINT, WmPaint);
+    add_procedure (WM_TIMER, WmTimer);
+    add_procedure (WM_LBUTTONDOWN, WmLbuttondown);
+    add_procedure (WM_COMMAND, WmCommand);
+    add_procedure (WM_SIZE, WmSize);
+    add_procedure (WM_DROPFILES, WmDropfiles);
+    add_procedure (WM_MOUSEACTIVATE, WmMouseactivate);
+    add_procedure (WM_CREATE, WmCreate);
+    add_procedure (WM_DESTROY, WmDestroy);
   }
   ~pngview_window () = default;
 

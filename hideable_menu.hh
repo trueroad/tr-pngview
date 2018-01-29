@@ -45,10 +45,10 @@ class hideable_menu: public window_class<Derived>
 public:
   hideable_menu ()
   {
-    this->procedures_[WM_SYSCOMMAND] = WmSyscommand;
-    this->procedures_[WM_EXITMENULOOP] = WmExitmenuloop;
-    this->procedures_[WM_CREATE] = WmCreate;
-    this->procedures_[WM_DESTROY] = WmDestroy;
+    this->add_procedure (WM_SYSCOMMAND, WmSyscommand);
+    this->add_procedure (WM_EXITMENULOOP, WmExitmenuloop);
+    this->add_procedure (WM_CREATE, WmCreate);
+    this->add_procedure (WM_DESTROY, WmDestroy);
   }
   ~hideable_menu () = default;
 
