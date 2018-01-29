@@ -38,9 +38,12 @@
 #include <windows.h>
 
 #include "hideable_menu.hh"
+#include "mouseactivate.hh"
 #include "bitmap_loader.hh"
 
-class pngview_window: public hideable_menu<pngview_window>
+class pngview_window: virtual public window_class<pngview_window>,
+                      public hideable_menu<pngview_window>,
+                      public mouseactivate<pngview_window>
 {
   enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
@@ -56,7 +59,6 @@ public:
     add_procedure (WM_COMMAND, WmCommand);
     add_procedure (WM_SIZE, WmSize);
     add_procedure (WM_DROPFILES, WmDropfiles);
-    add_procedure (WM_MOUSEACTIVATE, WmMouseactivate);
     add_procedure (WM_CREATE, WmCreate);
     add_procedure (WM_DESTROY, WmDestroy);
   }
@@ -76,7 +78,6 @@ private:
   LRESULT WmCommand (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmMouseactivate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
