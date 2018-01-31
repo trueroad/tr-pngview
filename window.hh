@@ -52,6 +52,14 @@ public:
   {
     procedures_[uMsg] = proc;
   }
+  HINSTANCE get_hInst (void)
+  {
+    return hInst_;
+  }
+  HWND get_hwnd (void)
+  {
+    return hwnd_;
+  }
 
   bool init (HINSTANCE, int);
   int message_loop (void);
