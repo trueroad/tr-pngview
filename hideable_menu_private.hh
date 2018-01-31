@@ -63,7 +63,9 @@ template <class Derived>
 LRESULT
 hideable_menu<Derived>::WmCreate (HWND hwnd, UINT, WPARAM, LPARAM)
 {
-  hmenu_ = LoadMenu (this->hInst_, MAKEINTRESOURCE (IDM_MENU));
+  auto &derived {static_cast<Derived&> (*this)};
+
+  hmenu_ = LoadMenu (derived.get_hInst (), MAKEINTRESOURCE (IDM_MENU));
 
   return 0;
 }
@@ -74,8 +76,6 @@ hideable_menu<Derived>::WmDestroy (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   DestroyMenu (hmenu_);
   hmenu_ = NULL;
-
-  PostQuitMessage (0);
 
   return 0;
 }

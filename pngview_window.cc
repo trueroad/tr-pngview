@@ -198,5 +198,7 @@ pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
 
   hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
 
+  PostQuitMessage (0);
+
   return 0;
 }

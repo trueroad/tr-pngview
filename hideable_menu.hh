@@ -40,15 +40,17 @@
 #include "window.hh"
 
 template <class Derived>
-class hideable_menu: virtual public window_class<Derived>
+class hideable_menu
 {
 public:
   hideable_menu ()
   {
-    this->add_procedure (WM_SYSCOMMAND, WmSyscommand);
-    this->add_procedure (WM_EXITMENULOOP, WmExitmenuloop);
-    this->add_procedure (WM_CREATE, WmCreate);
-    this->add_procedure (WM_DESTROY, WmDestroy);
+    auto &derived {static_cast<Derived&> (*this)};
+
+    derived.add_procedure (WM_SYSCOMMAND, WmSyscommand);
+    derived.add_procedure (WM_EXITMENULOOP, WmExitmenuloop);
+    derived.add_procedure (WM_CREATE, WmCreate);
+    derived.add_procedure (WM_DESTROY, WmDestroy);
   }
   ~hideable_menu () = default;
 

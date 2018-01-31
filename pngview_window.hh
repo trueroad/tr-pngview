@@ -41,7 +41,7 @@
 #include "mouseactivate.hh"
 #include "bitmap_loader.hh"
 
-class pngview_window: virtual public window_class<pngview_window>,
+class pngview_window: public window_class<pngview_window>,
                       public hideable_menu<pngview_window>,
                       public mouseactivate<pngview_window>
 {
