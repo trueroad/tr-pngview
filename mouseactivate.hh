@@ -40,12 +40,14 @@
 #include "window.hh"
 
 template <class Derived>
-class mouseactivate: virtual public window_class<Derived>
+class mouseactivate
 {
 public:
   mouseactivate ()
   {
-    this->add_procedure (WM_MOUSEACTIVATE, WmMouseactivate);
+    auto &derived {static_cast<Derived&> (*this)};
+
+    derived.add_procedure (WM_MOUSEACTIVATE, WmMouseactivate);
   }
   ~mouseactivate () = default;
 

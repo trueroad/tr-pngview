@@ -48,15 +48,15 @@ public:
   window_class () = default;
   virtual ~window_class () = default;
 
-  bool init (HINSTANCE, int);
-  int message_loop (void);
-
-protected:
   void add_procedure (UINT uMsg, procedure proc)
   {
     procedures_[uMsg] = proc;
   }
 
+  bool init (HINSTANCE, int);
+  int message_loop (void);
+
+protected:
   PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
   PCTSTR title_ {TEXT ("tr-window")};
 
