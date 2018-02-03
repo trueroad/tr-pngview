@@ -84,6 +84,13 @@ private:
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
+  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_fill (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_contain (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_cover (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_about (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_exit (HWND, WORD, WORD, LPARAM);
+
   void calc_coordinate (void);
 
   const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};

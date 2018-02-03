@@ -102,35 +102,23 @@ pngview_window::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 }
 
 LRESULT
-pngview_window::WmCommand (HWND hwnd, UINT, WPARAM wParam, LPARAM)
+pngview_window::WmCommand (HWND hwnd, UINT, WPARAM wParam, LPARAM lParam)
 {
   switch (LOWORD (wParam))
     {
     case IDM_DOT_BY_DOT:
-      set_stretch_mode (stretch_mode::dot_by_dot);
-      break;
+      return Cmd_idm_dot_by_dot (hwnd, HIWORD (wParam),
+                                 LOWORD (wParam), lParam);
     case IDM_FILL:
-      set_stretch_mode (stretch_mode::fill);
-      break;
+      return Cmd_idm_fill (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
     case IDM_CONTAIN:
-      set_stretch_mode (stretch_mode::contain);
-      break;
+      return Cmd_idm_contain (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
     case IDM_COVER:
-      set_stretch_mode (stretch_mode::cover);
-      break;
+      return Cmd_idm_cover (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
     case IDM_ABOUT:
-      MessageBox (hwnd,
-                  TEXT (PACKAGE_NAME) TEXT (" ")
-                  TEXT (PACKAGE_VERSION) TEXT ("\n")
-                  TEXT (PACKAGE_COPYRIGHT) TEXT ("\n")
-                  TEXT (PACKAGE_LICENSE) TEXT ("\n\n")
-                  TEXT (PACKAGE_URL),
-                  TEXT ("About") TEXT (" ") TEXT(PACKAGE_NAME),
-                  MB_OK);
-      break;
+      return Cmd_idm_about (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
     case IDM_EXIT:
-      SendMessage (hwnd, WM_CLOSE, 0, 0);
-      break;
+      return Cmd_idm_exit (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
     }
   return 0;
 }
@@ -199,6 +187,61 @@ pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
   hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
 
   PostQuitMessage (0);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
+{
+  set_stretch_mode (stretch_mode::dot_by_dot);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_fill (HWND, WORD, WORD, LPARAM)
+{
+  set_stretch_mode (stretch_mode::fill);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_contain (HWND, WORD, WORD, LPARAM)
+{
+  set_stretch_mode (stretch_mode::contain);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
+{
+  set_stretch_mode (stretch_mode::cover);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_about (HWND hwnd, WORD, WORD, LPARAM)
+{
+  MessageBox (hwnd,
+              TEXT (PACKAGE_NAME) TEXT (" ")
+              TEXT (PACKAGE_VERSION) TEXT ("\n")
+              TEXT (PACKAGE_COPYRIGHT) TEXT ("\n")
+              TEXT (PACKAGE_LICENSE) TEXT ("\n\n")
+              TEXT (PACKAGE_URL),
+              TEXT ("About") TEXT (" ") TEXT(PACKAGE_NAME),
+              MB_OK);
+
+  return 0;
+}
+
+LRESULT
+pngview_window::Cmd_idm_exit (HWND hwnd, WORD, WORD, LPARAM)
+{
+  SendMessage (hwnd, WM_CLOSE, 0, 0);
 
   return 0;
 }
