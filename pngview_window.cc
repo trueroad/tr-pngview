@@ -202,21 +202,6 @@ pngview_window::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
 }
 
 LRESULT
-pngview_window::Cmd_idm_about (HWND hwnd, WORD, WORD, LPARAM)
-{
-  MessageBox (hwnd,
-              TEXT (PACKAGE_NAME) TEXT (" ")
-              TEXT (PACKAGE_VERSION) TEXT ("\n")
-              TEXT (PACKAGE_COPYRIGHT) TEXT ("\n")
-              TEXT (PACKAGE_LICENSE) TEXT ("\n\n")
-              TEXT (PACKAGE_URL),
-              TEXT ("About") TEXT (" ") TEXT(PACKAGE_NAME),
-              MB_OK);
-
-  return 0;
-}
-
-LRESULT
 pngview_window::Cmd_idm_exit (HWND hwnd, WORD, WORD, LPARAM)
 {
   SendMessage (hwnd, WM_CLOSE, 0, 0);
