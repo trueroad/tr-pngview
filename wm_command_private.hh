@@ -36,26 +36,16 @@
 
 template <class Derived>
 LRESULT
-wm_command<Derived>::WmCommand (HWND hwnd, UINT, WPARAM wParam, LPARAM lParam)
+wm_command<Derived>::WmCommand (HWND hwnd, UINT uMsg,
+                                WPARAM wParam, LPARAM lParam)
 {
   auto &p {static_cast<Derived&> (*this)};
 
-  switch (LOWORD (wParam))
-    {
-    case IDM_DOT_BY_DOT:
-      return p.Cmd_idm_dot_by_dot (hwnd, HIWORD (wParam),
-                                   LOWORD (wParam), lParam);
-    case IDM_FILL:
-      return p.Cmd_idm_fill (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_CONTAIN:
-      return p.Cmd_idm_contain (hwnd, HIWORD (wParam),
-                                LOWORD (wParam), lParam);
-    case IDM_COVER:
-      return p.Cmd_idm_cover (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_ABOUT:
-      return p.Cmd_idm_about (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_EXIT:
-      return p.Cmd_idm_exit (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    }
-  return 0;
+  auto wCode {HIWORD (wParam)};
+  auto wId {LOWORD (wParam)};
+
+  auto val = cmdprocs_.find (wId);
+  if (val != cmdprocs_.end ())
+    return (p.*(val->second)) (hwnd, wCode, wId, lParam);
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }

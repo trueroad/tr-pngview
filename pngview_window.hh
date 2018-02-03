@@ -57,7 +57,6 @@ public:
     title_ = pngview_title_;
 
     flush_temp_procmap ();
-
     add_procedure (WM_PAINT, WmPaint);
     add_procedure (WM_TIMER, WmTimer);
     add_procedure (WM_LBUTTONDOWN, WmLbuttondown);
@@ -65,6 +64,14 @@ public:
     add_procedure (WM_DROPFILES, WmDropfiles);
     add_procedure (WM_CREATE, WmCreate);
     add_procedure (WM_DESTROY, WmDestroy);
+
+    flush_temp_cmdprocmap ();
+    add_cmdprocedure (IDM_DOT_BY_DOT, Cmd_idm_dot_by_dot);
+    add_cmdprocedure (IDM_FILL, Cmd_idm_fill);
+    add_cmdprocedure (IDM_CONTAIN, Cmd_idm_contain);
+    add_cmdprocedure (IDM_COVER, Cmd_idm_cover);
+    add_cmdprocedure (IDM_ABOUT, Cmd_idm_about);
+    add_cmdprocedure (IDM_EXIT, Cmd_idm_exit);
   }
   ~pngview_window () = default;
 
@@ -75,13 +82,6 @@ public:
   void set_stretch_mode (stretch_mode);
   void increment_stretch_mode (void);
 
-  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_fill (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_contain (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_cover (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_about (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_exit (HWND, WORD, WORD, LPARAM);
-
 private:
   LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
@@ -90,6 +90,13 @@ private:
   LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
+
+  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_fill (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_contain (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_cover (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_about (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_exit (HWND, WORD, WORD, LPARAM);
 
   void calc_coordinate (void);
 

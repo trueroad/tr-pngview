@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// wm_command.hh: WM_COMMAND processing class
+// cmdmap_init_base.hh: WM_COMMAND procedure map initialization base class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,43 +32,45 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_WM_COMMAND_HH
-#define INCLUDE_GUARD_WM_COMMAND_HH
+#ifndef INCLUDE_GUARD_CMDMAP_INIT_BASE_HH
+#define INCLUDE_GUARD_CMDMAP_INIT_BASE_HH
+
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include <windows.h>
 
-#include "cmdmap_init_base.hh"
-#include "procmap_init_base.hh"
-
 template <class Derived>
-class wm_command: virtual public cmdmap_init_base<Derived>,
-                  virtual public procmap_init_base<Derived>
+class cmdmap_init_base
 {
   using cmdproc = LRESULT (Derived::*) (HWND, WORD, WORD, LPARAM);
 
 public:
-  wm_command ()
-  {
-    this->add_temp_procmap (WM_COMMAND, WmCommand);
-  }
-  ~wm_command () = default;
+  cmdmap_init_base () = default;
+  virtual ~cmdmap_init_base () = default;
 
 protected:
-  LRESULT WmCommand (HWND, UINT, WPARAM, LPARAM);
-
-  void add_cmdprocedure (WORD wId, cmdproc proc)
+  void add_temp_cmdprocmap (WORD wId, cmdproc proc)
   {
-    cmdprocs_[wId] = proc;
+    cmdprocs_temp_.push_back (std::make_pair (wId, proc));
   }
-  void flush_temp_cmdprocmap (void)
+  void flush_temp_cmdprocmap (std::unordered_map<WORD, cmdproc> *m)
   {
-    cmdmap_init_base<Derived>::flush_temp_cmdprocmap (&cmdprocs_);
+    for (const auto &p: cmdprocs_temp_)
+      {
+        (*m)[p.first] = p.second;
+      }
+    cmdprocs_temp_.clear ();
   }
 
 private:
-  std::unordered_map<WORD, cmdproc> cmdprocs_;
+  std::vector<std::pair<WORD, cmdproc>> cmdprocs_temp_;
+
+  cmdmap_init_base (const cmdmap_init_base&) = delete;
+  cmdmap_init_base& operator= (const cmdmap_init_base&) = delete;
+  cmdmap_init_base (cmdmap_init_base&&) = delete;
+  cmdmap_init_base& operator= (cmdmap_init_base&&) = delete;
 };
 
-#include "wm_command_private.hh"
-
-#endif // INCLUDE_GUARD_WM_COMMAND_HH
+#endif // INCLUDE_GUARD_CMDMAP_INIT_BASE_HH
