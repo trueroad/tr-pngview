@@ -102,28 +102,6 @@ pngview_window::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 }
 
 LRESULT
-pngview_window::WmCommand (HWND hwnd, UINT, WPARAM wParam, LPARAM lParam)
-{
-  switch (LOWORD (wParam))
-    {
-    case IDM_DOT_BY_DOT:
-      return Cmd_idm_dot_by_dot (hwnd, HIWORD (wParam),
-                                 LOWORD (wParam), lParam);
-    case IDM_FILL:
-      return Cmd_idm_fill (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_CONTAIN:
-      return Cmd_idm_contain (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_COVER:
-      return Cmd_idm_cover (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_ABOUT:
-      return Cmd_idm_about (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    case IDM_EXIT:
-      return Cmd_idm_exit (hwnd, HIWORD (wParam), LOWORD (wParam), lParam);
-    }
-  return 0;
-}
-
-LRESULT
 pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   width_ = LOWORD (lParam);
