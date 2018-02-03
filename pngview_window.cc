@@ -200,11 +200,3 @@ pngview_window::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
 
   return 0;
 }
-
-LRESULT
-pngview_window::Cmd_idm_exit (HWND hwnd, WORD, WORD, LPARAM)
-{
-  SendMessage (hwnd, WM_CLOSE, 0, 0);
-
-  return 0;
-}

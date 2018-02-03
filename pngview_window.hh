@@ -42,13 +42,15 @@
 #include "mouseactivate.hh"
 #include "wm_command.hh"
 #include "cmd_about.hh"
+#include "cmd_exit.hh"
 #include "bitmap_loader.hh"
 
 class pngview_window: public window_class<pngview_window>,
                       public hideable_menu<pngview_window>,
                       public mouseactivate<pngview_window>,
                       public wm_command<pngview_window>,
-                      public cmd_about<pngview_window>
+                      public cmd_about<pngview_window>,
+                      public cmd_exit<pngview_window>
 {
   enum class stretch_mode {dot_by_dot, fill, contain, cover};
 
@@ -72,7 +74,6 @@ public:
     add_cmdprocedure (IDM_FILL, Cmd_idm_fill);
     add_cmdprocedure (IDM_CONTAIN, Cmd_idm_contain);
     add_cmdprocedure (IDM_COVER, Cmd_idm_cover);
-    add_cmdprocedure (IDM_EXIT, Cmd_idm_exit);
   }
   ~pngview_window () = default;
 
