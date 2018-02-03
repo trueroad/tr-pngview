@@ -38,6 +38,8 @@ window_class<Derived>::init (HINSTANCE hInstance, int nCmdShow)
 {
   hInst_ = hInstance;
 
+  flush_temp_procmap ();
+
   if (!register_class ())
     return false;
 

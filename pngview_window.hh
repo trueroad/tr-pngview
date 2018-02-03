@@ -37,6 +37,7 @@
 
 #include <windows.h>
 
+#include "window.hh"
 #include "hideable_menu.hh"
 #include "mouseactivate.hh"
 #include "bitmap_loader.hh"
@@ -52,6 +53,8 @@ public:
   {
     classname_ = pngview_classname_;
     title_ = pngview_title_;
+
+    flush_temp_procmap ();
 
     add_procedure (WM_PAINT, WmPaint);
     add_procedure (WM_TIMER, WmTimer);
@@ -101,11 +104,6 @@ private:
 
   bitmap_loader bl_;
   stretch_mode sm_ = stretch_mode::dot_by_dot;
-
-  pngview_window (const pngview_window&) = delete;
-  pngview_window& operator= (const pngview_window&) = delete;
-  pngview_window (pngview_window&&) = delete;
-  pngview_window& operator= (pngview_window&&) = delete;
 };
 
 #endif // INCLUDE_PNGVIEW_WINDOW_HH

@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// hideable_menu.hh: Hideable menu class
+// procmap_init_base.hh: Procedure map initialization base class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,35 +32,45 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_HIDEABLE_MENU_HH
-#define INCLUDE_HIDEABLE_MENU_HH
+#ifndef INCLUDE_GUARD_PROCMAP_INIT_BASE_HH
+#define INCLUDE_GUARD_PROCMAP_INIT_BASE_HH
+
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include <windows.h>
 
-#include "procmap_init_base.hh"
-
 template <class Derived>
-class hideable_menu: virtual public procmap_init_base<Derived>
+class procmap_init_base
 {
+  using procedure = LRESULT (Derived::*) (HWND, UINT, WPARAM, LPARAM);
+
 public:
-  hideable_menu ()
-  {
-    this->add_temp_procmap (WM_SYSCOMMAND, WmSyscommand);
-    this->add_temp_procmap (WM_EXITMENULOOP, WmExitmenuloop);
-    this->add_temp_procmap (WM_CREATE, WmCreate);
-    this->add_temp_procmap (WM_DESTROY, WmDestroy);
-  }
-  ~hideable_menu () = default;
+  procmap_init_base () = default;
+  virtual ~procmap_init_base () = default;
 
 protected:
-  LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmExitmenuloop (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
+  void add_temp_procmap (UINT uMsg, procedure proc)
+  {
+    procedures_temp_.push_back (std::make_pair (uMsg, proc));
+  }
+  void flush_temp_procmap (std::unordered_map<UINT, procedure> *m)
+  {
+    for (const auto &p: procedures_temp_)
+      {
+        (*m)[p.first] = p.second;
+      }
+    procedures_temp_.clear ();
+  }
 
-  HMENU hmenu_ = NULL;
+private:
+  std::vector<std::pair<UINT, procedure>> procedures_temp_;
+
+  procmap_init_base (const procmap_init_base&) = delete;
+  procmap_init_base& operator= (const procmap_init_base&) = delete;
+  procmap_init_base (procmap_init_base&&) = delete;
+  procmap_init_base& operator= (procmap_init_base&&) = delete;
 };
 
-#include "hideable_menu_private.hh"
-
-#endif // INCLUDE_HIDEABLE_MENU_HH
+#endif // INCLUDE_GUARD_PROCMAP_INIT_BASE_HH

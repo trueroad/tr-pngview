@@ -39,8 +39,10 @@
 
 #include <windows.h>
 
+#include "procmap_init_base.hh"
+
 template <class Derived>
-class window_class
+class window_class: virtual public procmap_init_base<Derived>
 {
   using procedure = LRESULT (Derived::*) (HWND, UINT, WPARAM, LPARAM);
 
@@ -48,10 +50,6 @@ public:
   window_class () = default;
   virtual ~window_class () = default;
 
-  void add_procedure (UINT uMsg, procedure proc)
-  {
-    procedures_[uMsg] = proc;
-  }
   HINSTANCE get_hInst (void)
   {
     return hInst_;
@@ -68,6 +66,15 @@ protected:
   PCTSTR classname_ {TEXT ("TRWINDOWCLASS")};
   PCTSTR title_ {TEXT ("tr-window")};
 
+  void add_procedure (UINT uMsg, procedure proc)
+  {
+    procedures_[uMsg] = proc;
+  }
+  void flush_temp_procmap (void)
+  {
+    procmap_init_base<Derived>::flush_temp_procmap (&procedures_);
+  }
+
   bool register_class (void);
   bool create_window (void);
   void show_and_update_window (int);
@@ -79,11 +86,6 @@ private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);
 
   std::unordered_map<UINT, procedure> procedures_;
-
-  window_class (const window_class&) = delete;
-  window_class& operator= (const window_class&) = delete;
-  window_class (window_class&&) = delete;
-  window_class& operator= (window_class&&) = delete;
 };
 
 #include "window_private.hh"

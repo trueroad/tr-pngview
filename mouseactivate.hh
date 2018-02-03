@@ -37,28 +37,20 @@
 
 #include <windows.h>
 
-#include "window.hh"
+#include "procmap_init_base.hh"
 
 template <class Derived>
-class mouseactivate
+class mouseactivate: virtual public procmap_init_base<Derived>
 {
 public:
   mouseactivate ()
   {
-    auto &derived {static_cast<Derived&> (*this)};
-
-    derived.add_procedure (WM_MOUSEACTIVATE, WmMouseactivate);
+    this->add_temp_procmap (WM_MOUSEACTIVATE, WmMouseactivate);
   }
   ~mouseactivate () = default;
 
 protected:
   LRESULT WmMouseactivate (HWND, UINT, WPARAM, LPARAM);
-
-private:
-  mouseactivate (const mouseactivate&) = delete;
-  mouseactivate& operator= (const mouseactivate&) = delete;
-  mouseactivate (mouseactivate&&) = delete;
-  mouseactivate& operator= (mouseactivate&&) = delete;
 };
 
 #include "mouseactivate_private.hh"
