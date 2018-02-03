@@ -38,7 +38,7 @@
 #define PACKAGE_NAME \
   "tr-pngview"
 #define PACKAGE_VERSION \
-  "2018-01-28.04"
+  "2018-02-03.12"
 #define PACKAGE_COPYRIGHT \
   "Copyright (C) 2018 Masamichi Hosoda. All rights reserved."
 #define PACKAGE_LICENSE \
