@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_window.hh: pngview window class
+// drag_and_drop.hh: Drag and drop class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,63 +32,31 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_PNGVIEW_WINDOW_HH
-#define INCLUDE_PNGVIEW_WINDOW_HH
+#ifndef INCLUDE_GUARD_DRAG_AND_DROP_HH
+#define INCLUDE_GUARD_DRAG_AND_DROP_HH
 
 #include <windows.h>
 
-#include "window.hh"
-#include "hideable_menu.hh"
-#include "mouseactivate.hh"
-#include "wm_command.hh"
-#include "cmd_about.hh"
-#include "cmd_exit.hh"
-#include "stretch_mode_ui.hh"
-#include "timer_handler.hh"
-#include "drag_and_drop.hh"
-#include "stretch.hh"
+#include "procmap_init_base.hh"
 
-class pngview_window: public window_class<pngview_window>,
-                      public hideable_menu<pngview_window>,
-                      public mouseactivate<pngview_window>,
-                      public wm_command<pngview_window>,
-                      public cmd_about<pngview_window>,
-                      public cmd_exit<pngview_window>,
-                      public stretch_mode_ui<pngview_window>,
-                      public timer_handler<pngview_window>,
-                      public drag_and_drop<pngview_window>
+template <class Derived>
+class drag_and_drop:  virtual public procmap_init_base<Derived>
 {
 public:
-  pngview_window ()
+  drag_and_drop ()
   {
-    classname_ = pngview_classname_;
-    title_ = pngview_title_;
-
-    flush_temp_procmap ();
-    add_procedure (WM_PAINT, WmPaint);
-    add_procedure (WM_SIZE, WmSize);
-    add_procedure (WM_CREATE, WmCreate);
-    add_procedure (WM_DESTROY, WmDestroy);
-
-    flush_temp_cmdprocmap ();
+    this->add_temp_procmap (WM_DROPFILES, WmDropfiles);
+    this->add_temp_procmap (WM_CREATE, WmCreate);
+    this->add_temp_procmap (WM_DESTROY, WmDestroy);
   }
-  ~pngview_window () = default;
+  ~drag_and_drop () = default;
 
-  stretch_bitmap &get_stretch_bitmap (void)
-  {
-    return sb_;
-  }
-
-private:
-  LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
+protected:
+  LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
-
-  const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
-  const PCTSTR pngview_title_ {TEXT ("pngview")};
-
-  stretch_bitmap sb_;
 };
 
-#endif // INCLUDE_PNGVIEW_WINDOW_HH
+#include "drag_and_drop_private.hh"
+  
+#endif // INCLUDE_GUARD_DRAG_AND_DROP_HH

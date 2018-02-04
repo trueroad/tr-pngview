@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_window.cc: pngview window class
+// drag_and_drop_private.hh: Drag and drop class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,59 +32,51 @@
 // SUCH DAMAGE.
 //
 
-#include "pngview_window.hh"
-
 #include <string>
 
 #include <windows.h>
 
 #include "stretch.hh"
 
+template <class Derived>
 LRESULT
-pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
+drag_and_drop<Derived>::WmDropfiles (HWND hwnd, UINT uMsg,
+                                     WPARAM wParam, LPARAM lParam)
 {
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
+  {
+    std::wstring buff;
+    HDROP hd = reinterpret_cast<HDROP> (wParam);
 
-  sb_.paint (hdc);
+    buff.resize (DragQueryFileW (hd, 0, NULL, 0) + 1);
+    DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
+    DragFinish (hd);
 
-  EndPaint (hwnd, &ps);
+    {
+      auto &p {static_cast<Derived&> (*this)};
 
-  return 0;
-}
-
-LRESULT
-pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  sb_.window_size (LOWORD (lParam), HIWORD (lParam));
+      p.get_stretch_bitmap ().load_file (buff);
+    }
+  }
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
 
+template <class Derived>
 LRESULT
-pngview_window::WmCreate (HWND hwnd, UINT uMsg,
-                          WPARAM wParam, LPARAM lParam)
+drag_and_drop<Derived>::WmCreate (HWND hwnd, UINT uMsg,
+                                  WPARAM wParam, LPARAM lParam)
 {
-  hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-  sb_.init (hwnd, hmenu_);
-
-  drag_and_drop<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-  timer_handler<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
+  DragAcceptFiles (hwnd, TRUE);
 
   return 0;
 }
 
+template <class Derived>
 LRESULT
-pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
-                           WPARAM wParam, LPARAM lParam)
+drag_and_drop<Derived>::WmDestroy (HWND hwnd, UINT uMsg,
+                                   WPARAM wParam, LPARAM lParam)
 {
-  timer_handler<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
-  drag_and_drop<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
-
-  sb_.release ();
-  hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
-
-  PostQuitMessage (0);
+  DragAcceptFiles (hwnd, FALSE);
 
   return 0;
 }
