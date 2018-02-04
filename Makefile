@@ -38,7 +38,7 @@ LDFLAGS_WINDOWS = -mwindows
 # Dependencies
 #
 DEPS = $(OBJS:.o=.d)
-CPPFLAGS += -MMD -MP
+CPPFLAGS += -MMD -MP -MF $(@:.o=.d) -MT $@
 -include $(DEPS)
 
 #
@@ -67,6 +67,7 @@ endif
 CXXFLAGS += $(CXXFLAGS_STD)
 CPPFLAGS += $(CPPFLAGS_UNICODE)
 LDFLAGS += $(LDFLAGS_STATIC) $(LDFLAGS_WINDOWS) $(LDFLAGS_UNICODE)
+WINDRESFLAGS += $(foreach ARG,$(CPPFLAGS),--preprocessor-arg=$(ARG))
 
 
 #
@@ -82,7 +83,7 @@ pngview: $(OBJS)
 	$(CXX) $(LDFLAGS) $(TARGET_ARCH) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 %.res.o: %.rc
-	$(WINDRES) -i $< $(OUTPUT_OPTION)
+	$(WINDRES) $(WINDRESFLAGS) -i $< $(OUTPUT_OPTION)
 
 
 #
