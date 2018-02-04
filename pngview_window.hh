@@ -43,6 +43,7 @@
 #include "wm_command.hh"
 #include "cmd_about.hh"
 #include "cmd_exit.hh"
+#include "stretch_mode_ui.hh"
 #include "stretch.hh"
 
 class pngview_window: public window_class<pngview_window>,
@@ -50,7 +51,8 @@ class pngview_window: public window_class<pngview_window>,
                       public mouseactivate<pngview_window>,
                       public wm_command<pngview_window>,
                       public cmd_about<pngview_window>,
-                      public cmd_exit<pngview_window>
+                      public cmd_exit<pngview_window>,
+                      public stretch_mode_ui<pngview_window>
 {
 public:
   pngview_window ()
@@ -61,35 +63,27 @@ public:
     flush_temp_procmap ();
     add_procedure (WM_PAINT, WmPaint);
     add_procedure (WM_TIMER, WmTimer);
-    add_procedure (WM_LBUTTONDOWN, WmLbuttondown);
     add_procedure (WM_SIZE, WmSize);
     add_procedure (WM_DROPFILES, WmDropfiles);
     add_procedure (WM_CREATE, WmCreate);
     add_procedure (WM_DESTROY, WmDestroy);
 
     flush_temp_cmdprocmap ();
-    add_cmdprocedure (IDM_DOT_BY_DOT, Cmd_idm_dot_by_dot);
-    add_cmdprocedure (IDM_FILL, Cmd_idm_fill);
-    add_cmdprocedure (IDM_CONTAIN, Cmd_idm_contain);
-    add_cmdprocedure (IDM_COVER, Cmd_idm_cover);
   }
   ~pngview_window () = default;
+
+  stretch_bitmap &get_stretch_bitmap (void)
+  {
+    return sb_;
+  }
 
 private:
   LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmLbuttondown (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
-
-  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_fill (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_contain (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_cover (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_about (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_exit (HWND, WORD, WORD, LPARAM);
 
   const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
   const PCTSTR pngview_title_ {TEXT ("pngview")};

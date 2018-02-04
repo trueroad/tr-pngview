@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_window.cc: pngview window class
+// stretch_mode_ui_private.hh: Stretch mode UI class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,87 +32,61 @@
 // SUCH DAMAGE.
 //
 
-#include "pngview_window.hh"
-
-#include <string>
-
 #include <windows.h>
 
 #include "stretch.hh"
 
+template <class Derived>
 LRESULT
-pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
+stretch_mode_ui<Derived>::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 {
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
+  auto &p {static_cast<Derived&> (*this)};
 
-  sb_.paint (hdc);
-
-  EndPaint (hwnd, &ps);
+  p.get_stretch_bitmap ().increment_mode ();
 
   return 0;
 }
 
+template <class Derived>
 LRESULT
-pngview_window::WmTimer (HWND hwnd, UINT, WPARAM wParam, LPARAM)
+stretch_mode_ui<Derived>::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
 {
-  if (static_cast<UINT_PTR> (wParam) == timerid_)
-    sb_.timer ();
-  return 0;
-}
+  auto &p {static_cast<Derived&> (*this)};
 
-LRESULT
-pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  sb_.window_size (LOWORD (lParam), HIWORD (lParam));
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmDropfiles (HWND hwnd, UINT uMsg,
-                             WPARAM wParam, LPARAM lParam)
-{
-  {
-    std::wstring buff;
-    HDROP hd = reinterpret_cast<HDROP> (wParam);
-
-    buff.resize (DragQueryFileW (hd, 0, NULL, 0) + 1);
-    DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
-    DragFinish (hd);
-
-    sb_.load_file (buff);
-  }
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmCreate (HWND hwnd, UINT uMsg,
-                          WPARAM wParam, LPARAM lParam)
-{
-  hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-
-  DragAcceptFiles (hwnd, TRUE);
-
-  sb_.init (hwnd, hmenu_);
-
-  SetTimer (hwnd , timerid_ , 100 , NULL); // 100 ms
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::dot_by_dot);
 
   return 0;
 }
 
+template <class Derived>
 LRESULT
-pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
-                           WPARAM wParam, LPARAM lParam)
+stretch_mode_ui<Derived>::Cmd_idm_fill (HWND, WORD, WORD, LPARAM)
 {
-  KillTimer (hwnd, timerid_);
+  auto &p {static_cast<Derived&> (*this)};
 
-  sb_.release ();
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::fill);
 
-  hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
+  return 0;
+}
 
-  PostQuitMessage (0);
+template <class Derived>
+LRESULT
+stretch_mode_ui<Derived>::Cmd_idm_contain (HWND, WORD, WORD, LPARAM)
+{
+  auto &p {static_cast<Derived&> (*this)};
+
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::contain);
+
+  return 0;
+}
+
+template <class Derived>
+LRESULT
+stretch_mode_ui<Derived>::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
+{
+  auto &p {static_cast<Derived&> (*this)};
+
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::cover);
 
   return 0;
 }
