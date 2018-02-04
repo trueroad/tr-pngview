@@ -37,11 +37,8 @@
 #include <string>
 
 #include <windows.h>
-#include <gdiplus.h>
 
-#include "bitmap_loader.hh"
-#include "pngview_res.h"
-#include "version.h"
+#include "stretch.hh"
 
 LRESULT
 pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
@@ -49,28 +46,7 @@ pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
   PAINTSTRUCT ps;
   HDC hdc = BeginPaint (hwnd, &ps);
 
-  {
-    Gdiplus::Graphics g {hdc};
-    switch (sm_)
-      {
-      case stretch_mode::dot_by_dot:
-        g.DrawImage (bl_.get (), 0, 0);
-        break;
-      case stretch_mode::fill:
-        g.DrawImage (bl_.get (), 0, 0, width_, height_);
-        break;
-      case stretch_mode::contain:
-        g.DrawImage (bl_.get (),
-                     stretch_contain_x_, stretch_contain_y_,
-                     stretch_contain_width_, stretch_contain_height_);
-        break;
-      case stretch_mode::cover:
-        g.DrawImage (bl_.get (),
-                     stretch_cover_x_, stretch_cover_y_,
-                     stretch_cover_width_, stretch_cover_height_);
-        break;
-      }
-  }
+  sb_.paint (hdc);
 
   EndPaint (hwnd, &ps);
 
@@ -81,36 +57,21 @@ LRESULT
 pngview_window::WmTimer (HWND hwnd, UINT, WPARAM wParam, LPARAM)
 {
   if (static_cast<UINT_PTR> (wParam) == timerid_)
-    {
-      switch (bl_.load ())
-        {
-        case bitmap_loader::load_status::size_changed:
-          calc_coordinate ();
-          // no break
-        case bitmap_loader::load_status::same_size:
-          InvalidateRect (hwnd, NULL, FALSE);
-        }
-    }
+    sb_.timer ();
   return 0;
 }
 
 LRESULT
 pngview_window::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 {
-  increment_stretch_mode ();
+  sb_.increment_mode ();
   return 0;
 }
 
 LRESULT
 pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-  width_ = LOWORD (lParam);
-  height_ = HIWORD (lParam);
-  if (width_ == 0 || height_ == 0)
-    aspect_ratio_ = 0;
-  else
-    aspect_ratio_ = static_cast<double> (width_) / height_;
-  calc_coordinate ();
+  sb_.window_size (LOWORD (lParam), HIWORD (lParam));
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
@@ -127,12 +88,8 @@ pngview_window::WmDropfiles (HWND hwnd, UINT uMsg,
     DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
     DragFinish (hd);
 
-    bl_.set_filename (buff);
+    sb_.load_file (buff);
   }
-
-  bl_.load ();
-  calc_coordinate ();
-  InvalidateRect (hwnd, NULL, TRUE);
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
@@ -142,12 +99,10 @@ pngview_window::WmCreate (HWND hwnd, UINT uMsg,
                           WPARAM wParam, LPARAM lParam)
 {
   hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-  set_stretch_mode (sm_);
 
   DragAcceptFiles (hwnd, TRUE);
 
-  bl_.load ();
-  calc_coordinate ();
+  sb_.init (hwnd, hmenu_);
 
   SetTimer (hwnd , timerid_ , 100 , NULL); // 100 ms
 
@@ -160,7 +115,7 @@ pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
 {
   KillTimer (hwnd, timerid_);
 
-  bl_.release ();
+  sb_.release ();
 
   hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
 
@@ -172,7 +127,7 @@ pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
 LRESULT
 pngview_window::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
 {
-  set_stretch_mode (stretch_mode::dot_by_dot);
+  sb_.set_mode (stretch_bitmap::mode::dot_by_dot);
 
   return 0;
 }
@@ -180,7 +135,7 @@ pngview_window::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
 LRESULT
 pngview_window::Cmd_idm_fill (HWND, WORD, WORD, LPARAM)
 {
-  set_stretch_mode (stretch_mode::fill);
+  sb_.set_mode (stretch_bitmap::mode::fill);
 
   return 0;
 }
@@ -188,7 +143,7 @@ pngview_window::Cmd_idm_fill (HWND, WORD, WORD, LPARAM)
 LRESULT
 pngview_window::Cmd_idm_contain (HWND, WORD, WORD, LPARAM)
 {
-  set_stretch_mode (stretch_mode::contain);
+  sb_.set_mode (stretch_bitmap::mode::contain);
 
   return 0;
 }
@@ -196,7 +151,7 @@ pngview_window::Cmd_idm_contain (HWND, WORD, WORD, LPARAM)
 LRESULT
 pngview_window::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
 {
-  set_stretch_mode (stretch_mode::cover);
+  sb_.set_mode (stretch_bitmap::mode::cover);
 
   return 0;
 }

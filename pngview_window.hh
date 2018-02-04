@@ -43,7 +43,7 @@
 #include "wm_command.hh"
 #include "cmd_about.hh"
 #include "cmd_exit.hh"
-#include "bitmap_loader.hh"
+#include "stretch.hh"
 
 class pngview_window: public window_class<pngview_window>,
                       public hideable_menu<pngview_window>,
@@ -52,8 +52,6 @@ class pngview_window: public window_class<pngview_window>,
                       public cmd_about<pngview_window>,
                       public cmd_exit<pngview_window>
 {
-  enum class stretch_mode {dot_by_dot, fill, contain, cover};
-
 public:
   pngview_window ()
   {
@@ -77,13 +75,6 @@ public:
   }
   ~pngview_window () = default;
 
-  stretch_mode get_stretch_mode (void)
-  {
-    return sm_;
-  }
-  void set_stretch_mode (stretch_mode);
-  void increment_stretch_mode (void);
-
 private:
   LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
@@ -100,26 +91,11 @@ private:
   LRESULT Cmd_idm_about (HWND, WORD, WORD, LPARAM);
   LRESULT Cmd_idm_exit (HWND, WORD, WORD, LPARAM);
 
-  void calc_coordinate (void);
-
   const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
   const PCTSTR pngview_title_ {TEXT ("pngview")};
   const UINT_PTR timerid_ = 1;
 
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  int stretch_contain_x_ = 0;
-  int stretch_contain_y_ = 0;
-  int stretch_contain_width_ = 0;
-  int stretch_contain_height_ = 0;
-  int stretch_cover_x_ = 0;
-  int stretch_cover_y_ = 0;
-  int stretch_cover_width_ = 0;
-  int stretch_cover_height_ = 0;
-
-  bitmap_loader bl_;
-  stretch_mode sm_ = stretch_mode::dot_by_dot;
+  stretch_bitmap sb_;
 };
 
 #endif // INCLUDE_PNGVIEW_WINDOW_HH

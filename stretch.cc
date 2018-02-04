@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// stretch.cc: stretch functions
+// stretch.cc: Stretch bitmap class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,18 +32,92 @@
 // SUCH DAMAGE.
 //
 
-#include "pngview_window.hh"
+#include "stretch.hh"
 
 #include <windows.h>
+#include <gdiplus.h>
 
+#include "bitmap_loader.hh"
 #include "pngview_res.h"
 
 void
-pngview_window::set_stretch_mode (stretch_mode s)
+stretch_bitmap::init (HWND hwnd, HMENU hmenu)
 {
-  if (sm_ != s)
+  hwnd_ = hwnd;
+  hmenu_ = hmenu;
+
+  set_mode (mode_);
+  bl_.load ();
+  calc_coordinate ();
+}
+
+void
+stretch_bitmap::paint (HDC hdc)
+{
+  Gdiplus::Graphics g {hdc};
+  switch (mode_)
     {
-      sm_ = s;
+    case mode::dot_by_dot:
+      g.DrawImage (bl_.get (), 0, 0);
+      break;
+    case mode::fill:
+      g.DrawImage (bl_.get (), 0, 0, width_, height_);
+      break;
+    case mode::contain:
+      g.DrawImage (bl_.get (),
+                   stretch_contain_x_, stretch_contain_y_,
+                   stretch_contain_width_, stretch_contain_height_);
+      break;
+    case mode::cover:
+      g.DrawImage (bl_.get (),
+                   stretch_cover_x_, stretch_cover_y_,
+                   stretch_cover_width_, stretch_cover_height_);
+      break;
+    }
+}
+
+void
+stretch_bitmap::timer (void)
+{
+  switch (bl_.load ())
+    {
+    case bitmap_loader::load_status::size_changed:
+      calc_coordinate ();
+      // no break
+    case bitmap_loader::load_status::same_size:
+      InvalidateRect (hwnd_, NULL, FALSE);
+    }
+}
+
+void
+stretch_bitmap::window_size (WORD w, WORD h)
+{
+  width_ = w;
+  height_ = h;
+
+  if (width_ == 0 || height_ == 0)
+    aspect_ratio_ = 0;
+  else
+    aspect_ratio_ = static_cast<double> (width_) / height_;
+
+  calc_coordinate ();
+}
+
+void
+stretch_bitmap::load_file (const std::wstring &s)
+{
+  bl_.set_filename (s);
+  bl_.load ();
+  calc_coordinate ();
+  InvalidateRect (hwnd_, NULL, TRUE);
+}
+
+void
+stretch_bitmap::set_mode (mode m)
+{
+  if (mode_ != m)
+    {
+      mode_ = m;
       if (hwnd_)
         InvalidateRect (hwnd_, NULL, TRUE);
     }
@@ -52,16 +126,20 @@ pngview_window::set_stretch_mode (stretch_mode s)
   mii.cbSize = sizeof (mii);
   mii.fMask = MIIM_STATE;
 
-  mii.fState = sm_ == stretch_mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState =
+    (mode_ == mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED);
   SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
 
-  mii.fState = sm_ == stretch_mode::fill ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState =
+    (mode_ == mode::fill ? MFS_CHECKED : MFS_UNCHECKED);
   SetMenuItemInfo (hmenu_, IDM_FILL, FALSE, &mii);
 
-  mii.fState = sm_ == stretch_mode::contain ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState =
+    (mode_ == mode::contain ? MFS_CHECKED : MFS_UNCHECKED);
   SetMenuItemInfo (hmenu_, IDM_CONTAIN, FALSE, &mii);
 
-  mii.fState = sm_ == stretch_mode::cover ? MFS_CHECKED : MFS_UNCHECKED;
+  mii.fState =
+    (mode_ == mode::cover ? MFS_CHECKED : MFS_UNCHECKED);
   SetMenuItemInfo (hmenu_, IDM_COVER, FALSE, &mii);
 
   if (hwnd_)
@@ -69,33 +147,33 @@ pngview_window::set_stretch_mode (stretch_mode s)
 }
 
 void
-pngview_window::increment_stretch_mode (void)
+stretch_bitmap::increment_mode (void)
 {
-  stretch_mode s;
+  mode m;
 
-  switch (sm_)
+  switch (mode_)
     {
-    case stretch_mode::dot_by_dot:
-      s = stretch_mode::fill;
+    case mode::dot_by_dot:
+      m = mode::fill;
       break;
-    case stretch_mode::fill:
-      s = stretch_mode::contain;
+    case mode::fill:
+      m = mode::contain;
       break;
-    case stretch_mode::contain:
-      s = stretch_mode::cover;
+    case mode::contain:
+      m = mode::cover;
       break;
-    case stretch_mode::cover:
-      s = stretch_mode::dot_by_dot;
+    case mode::cover:
+      m = mode::dot_by_dot;
       break;
     default:
-      s = sm_;
+      m = mode_;
     }
 
-  set_stretch_mode (s);
+  set_mode (m);
 }
 
 void
-pngview_window::calc_coordinate (void)
+stretch_bitmap::calc_coordinate (void)
 {
   auto zoom_ratio_height = static_cast<double> (height_) / bl_.height ();
   auto bmp_zoomed_width = zoom_ratio_height * bl_.width ();
