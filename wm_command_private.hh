@@ -32,8 +32,6 @@
 // SUCH DAMAGE.
 //
 
-#include "pngview_res.h"
-
 template <class Derived>
 LRESULT
 wm_command<Derived>::WmCommand (HWND hwnd, UINT uMsg,
