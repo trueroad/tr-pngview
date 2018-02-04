@@ -32,79 +32,43 @@
 // SUCH DAMAGE.
 //
 
-#include "pngview_window.hh"
-
-#include <string>
-
 #include <windows.h>
 
 #include "stretch.hh"
 
+template <class Derived>
 LRESULT
-pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
+timer_handler<Derived>::WmTimer (HWND hwnd, UINT uMsg,
+                                 WPARAM wParam, LPARAM lParam)
 {
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
+  if (static_cast<UINT_PTR> (wParam) == timerid_)
+    {
+      auto &p {static_cast<Derived&> (*this)};
+      
+      p.get_stretch_bitmap ().timer ();
 
-  sb_.paint (hdc);
+      return 0;
+    }
 
-  EndPaint (hwnd, &ps);
+  return DefWindowProc (hwnd, uMsg, wParam, lParam);;
+}
+
+template <class Derived>
+LRESULT
+timer_handler<Derived>::WmCreate (HWND hwnd, UINT uMsg,
+                                  WPARAM wParam, LPARAM lParam)
+{
+  SetTimer (hwnd , timerid_ , 100 , NULL); // 100 ms
 
   return 0;
 }
 
+template <class Derived>
 LRESULT
-pngview_window::WmSize (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+timer_handler<Derived>::WmDestroy (HWND hwnd, UINT uMsg,
+                                   WPARAM wParam, LPARAM lParam)
 {
-  sb_.window_size (LOWORD (lParam), HIWORD (lParam));
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmDropfiles (HWND hwnd, UINT uMsg,
-                             WPARAM wParam, LPARAM lParam)
-{
-  {
-    std::wstring buff;
-    HDROP hd = reinterpret_cast<HDROP> (wParam);
-
-    buff.resize (DragQueryFileW (hd, 0, NULL, 0) + 1);
-    DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
-    DragFinish (hd);
-
-    sb_.load_file (buff);
-  }
-
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT
-pngview_window::WmCreate (HWND hwnd, UINT uMsg,
-                          WPARAM wParam, LPARAM lParam)
-{
-  hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-
-  DragAcceptFiles (hwnd, TRUE);
-
-  sb_.init (hwnd, hmenu_);
-
-  timer_handler<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-
-  return 0;
-}
-
-LRESULT
-pngview_window::WmDestroy (HWND hwnd, UINT uMsg,
-                           WPARAM wParam, LPARAM lParam)
-{
-  timer_handler<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
-
-  sb_.release ();
-
-  hideable_menu<pngview_window>::WmDestroy (hwnd, uMsg, wParam, lParam);
-
-  PostQuitMessage (0);
+  KillTimer (hwnd, timerid_);
 
   return 0;
 }

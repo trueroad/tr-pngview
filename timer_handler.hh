@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_window.hh: pngview window class
+// timer_handler.hh: Timer handler class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,63 +32,34 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_PNGVIEW_WINDOW_HH
-#define INCLUDE_PNGVIEW_WINDOW_HH
+#ifndef INCLUDE_GUARD_TIMER_HANDLER_HH
+#define INCLUDE_GUARD_TIMER_HANDLER_HH
 
 #include <windows.h>
 
-#include "window.hh"
-#include "hideable_menu.hh"
-#include "mouseactivate.hh"
-#include "wm_command.hh"
-#include "cmd_about.hh"
-#include "cmd_exit.hh"
-#include "stretch_mode_ui.hh"
-#include "timer_handler.hh"
-#include "stretch.hh"
+#include "procmap_init_base.hh"
 
-class pngview_window: public window_class<pngview_window>,
-                      public hideable_menu<pngview_window>,
-                      public mouseactivate<pngview_window>,
-                      public wm_command<pngview_window>,
-                      public cmd_about<pngview_window>,
-                      public cmd_exit<pngview_window>,
-                      public stretch_mode_ui<pngview_window>,
-                      public timer_handler<pngview_window>
+template <class Derived>
+class timer_handler:  virtual public procmap_init_base<Derived>
 {
 public:
-  pngview_window ()
+  timer_handler ()
   {
-    classname_ = pngview_classname_;
-    title_ = pngview_title_;
-
-    flush_temp_procmap ();
-    add_procedure (WM_PAINT, WmPaint);
-    add_procedure (WM_SIZE, WmSize);
-    add_procedure (WM_DROPFILES, WmDropfiles);
-    add_procedure (WM_CREATE, WmCreate);
-    add_procedure (WM_DESTROY, WmDestroy);
-
-    flush_temp_cmdprocmap ();
+    this->add_temp_procmap (WM_TIMER, WmTimer);
+    this->add_temp_procmap (WM_CREATE, WmCreate);
+    this->add_temp_procmap (WM_DESTROY, WmDestroy);
   }
-  ~pngview_window () = default;
+  ~timer_handler () = default;
 
-  stretch_bitmap &get_stretch_bitmap (void)
-  {
-    return sb_;
-  }
-
-private:
-  LRESULT WmPaint (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmSize (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDropfiles (HWND, UINT, WPARAM, LPARAM);
+protected:
+  LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
-  const PCTSTR pngview_classname_ {TEXT ("TRPNGVIEW")};
-  const PCTSTR pngview_title_ {TEXT ("pngview")};
-
-  stretch_bitmap sb_;
+private:
+  const UINT_PTR timerid_ = 1;
 };
 
-#endif // INCLUDE_PNGVIEW_WINDOW_HH
+#include "timer_handler_private.hh"
+
+#endif // GUARD_TIMER_HANDLER_HH
