@@ -46,6 +46,7 @@
 #include "stretch_mode_ui.hh"
 #include "timer_handler.hh"
 #include "drag_and_drop.hh"
+#include "per_monitor_dpi_ui.hh"
 #include "stretch.hh"
 
 class pngview_window: public window_class<pngview_window>,
@@ -56,7 +57,8 @@ class pngview_window: public window_class<pngview_window>,
                       public cmd_exit<pngview_window>,
                       public stretch_mode_ui<pngview_window>,
                       public timer_handler<pngview_window>,
-                      public drag_and_drop<pngview_window>
+                      public drag_and_drop<pngview_window>,
+                      public per_monitor_dpi_ui<pngview_window>
 {
 public:
   pngview_window ()
