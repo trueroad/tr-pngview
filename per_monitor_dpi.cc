@@ -45,6 +45,9 @@ per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {NULL};
 per_monitor_dpi::LPSETTHREADDPIAWARENESSCONTEXT
 per_monitor_dpi::lpfnSetThreadDpiAwarenessContext_ {NULL};
 
+bool
+per_monitor_dpi::bswitchaware_;
+
 per_monitor_dpi::per_monitor_dpi ()
 {
   lpfnEnableNonClientDpiScaling_ =
@@ -54,7 +57,18 @@ per_monitor_dpi::per_monitor_dpi ()
     reinterpret_cast<LPSETTHREADDPIAWARENESSCONTEXT>
     (mu_.get_proc_address ("SetThreadDpiAwarenessContext"));
 
-  SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+  if (SetThreadDpiAwarenessContext
+      (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+    {
+      // Windows 10 Creators Update (1703) +
+      bswitchaware_ = false;
+    }
+  else
+    {
+      // Windows 10 Anniversary Update (1607)
+      bswitchaware_ = true;
+      SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+    }
 }
 
 // EnableNonClientDpiScaling: Windows 10 Anniversary Update (1607) +

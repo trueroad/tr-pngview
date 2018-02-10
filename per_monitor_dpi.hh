@@ -51,11 +51,23 @@
   (reinterpret_cast<HANDLE> (-3))
 #endif
 
+// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:
+//   Windows 10 Creators Update (1703) +
+#ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+#define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 \
+  (reinterpret_cast<HANDLE> (-4))
+#endif
+
 class per_monitor_dpi
 {
 public:
   per_monitor_dpi ();
   ~per_monitor_dpi () = default;
+
+  static bool get_switch_aware (void)
+  {
+    return bswitchaware_;
+  }
 
   static void EnableNonClientDpiScaling (HWND);
   static HANDLE SetThreadDpiAwarenessContext (HANDLE);
@@ -91,6 +103,7 @@ private:
   static module_user32dll mu_;
   static LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_;
   static LPSETTHREADDPIAWARENESSCONTEXT lpfnSetThreadDpiAwarenessContext_;
+  static bool bswitchaware_;
 
   per_monitor_dpi (const per_monitor_dpi&) = delete;
   per_monitor_dpi& operator= (const per_monitor_dpi&) = delete;
@@ -103,13 +116,15 @@ class dpi_system_aware
 public:
   dpi_system_aware ()
   {
-    per_monitor_dpi::SetThreadDpiAwarenessContext
-      (DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
+    if (per_monitor_dpi::get_switch_aware ())
+      per_monitor_dpi::SetThreadDpiAwarenessContext
+        (DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
   }
   ~dpi_system_aware ()
   {
-    per_monitor_dpi::SetThreadDpiAwarenessContext
-      (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+    if (per_monitor_dpi::get_switch_aware ())
+      per_monitor_dpi::SetThreadDpiAwarenessContext
+        (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
   }
 };
 
