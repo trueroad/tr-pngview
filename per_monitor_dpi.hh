@@ -41,15 +41,39 @@ class per_monitor_dpi
 {
 public:
   per_monitor_dpi ();
-  ~per_monitor_dpi ();
+  ~per_monitor_dpi () = default;
 
-  void EnableNonClientDpiScaling (HWND);
+  static void EnableNonClientDpiScaling (HWND);
 
 private:
   using LPENABLENONCLIENTDPISCALING = BOOL (WINAPI *) (HWND);
 
-  HMODULE hMod_ = NULL;
-  LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_ = NULL;
+  class module_user32dll
+  {
+  public:
+    module_user32dll ()
+    {
+      hMod_ = LoadLibrary (TEXT ("user32.dll"));
+    }
+    ~module_user32dll ()
+    {
+      FreeLibrary (hMod_);
+    }
+
+    FARPROC get_proc_address (LPCSTR s)
+    {
+      if (hMod_)
+        return GetProcAddress (hMod_, s);
+      else
+        return NULL;
+    }
+
+  private:
+    HMODULE hMod_;
+  };
+
+  static module_user32dll mu_;
+  static LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_;
 
   per_monitor_dpi (const per_monitor_dpi&) = delete;
   per_monitor_dpi& operator= (const per_monitor_dpi&) = delete;

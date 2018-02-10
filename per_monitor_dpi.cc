@@ -36,21 +36,17 @@
 
 #include <windows.h>
 
+per_monitor_dpi::module_user32dll
+per_monitor_dpi::mu_;
+
+per_monitor_dpi::LPENABLENONCLIENTDPISCALING
+per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {NULL};
+
 per_monitor_dpi::per_monitor_dpi ()
 {
-  if (!hMod_)
-    hMod_ = LoadLibrary (TEXT ("user32.dll"));
-
-  if (hMod_ && !lpfnEnableNonClientDpiScaling_)
-    lpfnEnableNonClientDpiScaling_ =
-      reinterpret_cast<LPENABLENONCLIENTDPISCALING>
-      (GetProcAddress (hMod_, "EnableNonClientDpiScaling"));
-}
-
-per_monitor_dpi::~per_monitor_dpi ()
-{
-  if (hMod_)
-    FreeLibrary (hMod_);
+  lpfnEnableNonClientDpiScaling_ =
+    reinterpret_cast<LPENABLENONCLIENTDPISCALING>
+    (mu_.get_proc_address ("EnableNonClientDpiScaling"));
 }
 
 // EnableNonClientDpiScaling: Windows 10 Anniversary Update (1607) +
