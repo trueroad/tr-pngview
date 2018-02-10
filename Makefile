@@ -87,6 +87,12 @@ pngview: $(OBJS)
 
 
 #
+# Other dependencies
+#
+pngview.res.o: pngview.manifest
+
+
+#
 # Implicit variables (from `make -p`)
 #
 
