@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// per_monitor_dpi_ui_private.hh: Per monitor DPI UI class
+// per_monitor_dpi.hh: Per monitor DPI class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,26 +32,29 @@
 // SUCH DAMAGE.
 //
 
-template <class Derived>
-LRESULT
-per_monitor_dpi_ui<Derived>::WmDpiChanged (HWND hwnd, UINT,
-                                           WPARAM, LPARAM lParam)
+#ifndef INCLUDE_GUARD_PER_MONITOR_DPI_HH
+#define INCLUDE_GUARD_PER_MONITOR_DPI_HH
+
+#include <windows.h>
+
+class per_monitor_dpi
 {
-  LPRECT lprc {reinterpret_cast <LPRECT> (lParam)};
+public:
+  per_monitor_dpi ();
+  ~per_monitor_dpi ();
 
-  SetWindowPos(hwnd, NULL, lprc->left, lprc->top,
-               lprc->right - lprc->left, lprc->bottom - lprc->top,
-               SWP_NOZORDER);
+  void EnableNonClientDpiScaling (HWND);
 
-  return 0;
-}
+private:
+  using LPENABLENONCLIENTDPISCALING = BOOL (WINAPI *) (HWND);
 
-template <class Derived>
-LRESULT
-per_monitor_dpi_ui<Derived>::WmNcCreate (HWND hwnd, UINT uMsg,
-                                         WPARAM wParam, LPARAM lParam)
-{
-  pmd.EnableNonClientDpiScaling (hwnd);
+  HMODULE hMod_ = NULL;
+  LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_ = NULL;
 
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
-}
+  per_monitor_dpi (const per_monitor_dpi&) = delete;
+  per_monitor_dpi& operator= (const per_monitor_dpi&) = delete;
+  per_monitor_dpi (per_monitor_dpi&&) = delete;
+  per_monitor_dpi& operator= (per_monitor_dpi&&) = delete;
+};
+
+#endif // INCLUDE_GUARD_PER_MONITOR_DPI_HH

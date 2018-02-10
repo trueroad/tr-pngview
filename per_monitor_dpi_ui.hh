@@ -38,6 +38,7 @@
 #include <windows.h>
 
 #include "procmap_init_base.hh"
+#include "per_monitor_dpi.hh"
 
 // WM_DPICHANGED: Windows 8.1+
 #ifndef WM_DPICHANGED
@@ -51,11 +52,16 @@ public:
   per_monitor_dpi_ui ()
   {
     this->add_temp_procmap (WM_DPICHANGED, WmDpiChanged);
+    this->add_temp_procmap (WM_NCCREATE, WmNcCreate);
   }
   ~per_monitor_dpi_ui () = default;
 
 protected:
   LRESULT WmDpiChanged (HWND, UINT, WPARAM, LPARAM);
+  LRESULT WmNcCreate (HWND, UINT, WPARAM, LPARAM);
+
+private:
+  per_monitor_dpi pmd;
 };
 
 #include "per_monitor_dpi_ui_private.hh"

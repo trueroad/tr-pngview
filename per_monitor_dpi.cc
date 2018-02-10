@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// per_monitor_dpi_ui_private.hh: Per monitor DPI UI class
+// per_monitor_dpi.cc: Per monitor DPI class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,26 +32,31 @@
 // SUCH DAMAGE.
 //
 
-template <class Derived>
-LRESULT
-per_monitor_dpi_ui<Derived>::WmDpiChanged (HWND hwnd, UINT,
-                                           WPARAM, LPARAM lParam)
+#include "per_monitor_dpi.hh"
+
+#include <windows.h>
+
+per_monitor_dpi::per_monitor_dpi ()
 {
-  LPRECT lprc {reinterpret_cast <LPRECT> (lParam)};
+  if (!hMod_)
+    hMod_ = LoadLibrary (TEXT ("user32.dll"));
 
-  SetWindowPos(hwnd, NULL, lprc->left, lprc->top,
-               lprc->right - lprc->left, lprc->bottom - lprc->top,
-               SWP_NOZORDER);
-
-  return 0;
+  if (hMod_ && !lpfnEnableNonClientDpiScaling_)
+    lpfnEnableNonClientDpiScaling_ =
+      reinterpret_cast<LPENABLENONCLIENTDPISCALING>
+      (GetProcAddress (hMod_, "EnableNonClientDpiScaling"));
 }
 
-template <class Derived>
-LRESULT
-per_monitor_dpi_ui<Derived>::WmNcCreate (HWND hwnd, UINT uMsg,
-                                         WPARAM wParam, LPARAM lParam)
+per_monitor_dpi::~per_monitor_dpi ()
 {
-  pmd.EnableNonClientDpiScaling (hwnd);
+  if (hMod_)
+    FreeLibrary (hMod_);
+}
 
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
+// EnableNonClientDpiScaling: Windows 10 Anniversary Update (1607) +
+void
+per_monitor_dpi::EnableNonClientDpiScaling (HWND hwnd)
+{
+  if (lpfnEnableNonClientDpiScaling_)
+    lpfnEnableNonClientDpiScaling_ (hwnd);
 }

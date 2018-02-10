@@ -22,7 +22,7 @@ LDFLAGS_STATIC =
 #
 OBJS = pngview.o \
 	pngview_window.o stretch.o \
-	bitmap_loader.o pngview.res.o
+	bitmap_loader.o per_monitor_dpi.o pngview.res.o
 LDLIBS = -lgdiplus -lgdi32
 
 
