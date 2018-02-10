@@ -46,4 +46,29 @@
 #define PACKAGE_URL \
   "https://github.com/trueroad/tr-pngview"
 
+#define VER_FILEVERSION \
+  0,0,0,0
+#define VER_PRODUCTVERSION \
+  0,0,0,0
+
+#define VER_FILEDESCRIPTION_STR \
+  "TrueRoad PNG Viewer\0"
+#define VER_INTERNALNAME_STR \
+  "pngview.exe"
+#define VER_ORIGINALFILENAME_STR \
+  "pngview.exe"
+
+#define VER_FILEVERSION_STR \
+  PACKAGE_VERSION "\0"
+#define VER_LEGALCOPYRIGHT_STR \
+  PACKAGE_COPYRIGHT "\0"
+#define VER_PRODUCTNAME_STR \
+  PACKAGE_NAME "\0"
+#define VER_PRODUCTVERSION_STR \
+  PACKAGE_VERSION "\0"
+
+//#define VER_COMPANYNAME_STR
+//#define VER_LEGALTRADEMARKS1_STR
+//#define VER_LEGALTRADEMARKS2_STR
+
 #endif // INCLUDE_GUARD_VERSION_H
