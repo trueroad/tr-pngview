@@ -32,12 +32,15 @@
 // SUCH DAMAGE.
 //
 
+#include "per_monitor_dpi.hh"
 #include "version.h"
 
 template <class Derived>
 LRESULT
 cmd_about<Derived>::Cmd_idm_about (HWND hwnd, WORD, WORD, LPARAM)
 {
+  dpi_system_aware dsa;
+
   MessageBox (hwnd,
               TEXT (PACKAGE_NAME) TEXT (" ")
               TEXT (PACKAGE_VERSION) TEXT ("\n")

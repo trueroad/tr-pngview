@@ -42,11 +42,19 @@ per_monitor_dpi::mu_;
 per_monitor_dpi::LPENABLENONCLIENTDPISCALING
 per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {NULL};
 
+per_monitor_dpi::LPSETTHREADDPIAWARENESSCONTEXT
+per_monitor_dpi::lpfnSetThreadDpiAwarenessContext_ {NULL};
+
 per_monitor_dpi::per_monitor_dpi ()
 {
   lpfnEnableNonClientDpiScaling_ =
     reinterpret_cast<LPENABLENONCLIENTDPISCALING>
     (mu_.get_proc_address ("EnableNonClientDpiScaling"));
+  lpfnSetThreadDpiAwarenessContext_ =
+    reinterpret_cast<LPSETTHREADDPIAWARENESSCONTEXT>
+    (mu_.get_proc_address ("SetThreadDpiAwarenessContext"));
+
+  SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 }
 
 // EnableNonClientDpiScaling: Windows 10 Anniversary Update (1607) +
@@ -55,4 +63,13 @@ per_monitor_dpi::EnableNonClientDpiScaling (HWND hwnd)
 {
   if (lpfnEnableNonClientDpiScaling_)
     lpfnEnableNonClientDpiScaling_ (hwnd);
+}
+
+// SetThreadDpiAwarenessContext: Windows 10 Anniversary Update (1607) +
+HANDLE
+per_monitor_dpi::SetThreadDpiAwarenessContext (HANDLE haware)
+{
+  if (lpfnSetThreadDpiAwarenessContext_)
+    return lpfnSetThreadDpiAwarenessContext_ (haware);
+  return NULL;
 }

@@ -37,6 +37,20 @@
 
 #include <windows.h>
 
+// DPI_AWARENESS_CONTEXT_SYSTEM_AWARE:
+//   Windows 10 Anniversary Update (1607) +
+#ifndef DPI_AWARENESS_CONTEXT_SYSTEM_AWARE
+#define DPI_AWARENESS_CONTEXT_SYSTEM_AWARE \
+  (reinterpret_cast<HANDLE> (-2))
+#endif
+
+// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE:
+//   Windows 10 Anniversary Update (1607) +
+#ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE
+#define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE \
+  (reinterpret_cast<HANDLE> (-3))
+#endif
+
 class per_monitor_dpi
 {
 public:
@@ -44,9 +58,11 @@ public:
   ~per_monitor_dpi () = default;
 
   static void EnableNonClientDpiScaling (HWND);
+  static HANDLE SetThreadDpiAwarenessContext (HANDLE);
 
 private:
   using LPENABLENONCLIENTDPISCALING = BOOL (WINAPI *) (HWND);
+  using LPSETTHREADDPIAWARENESSCONTEXT = HANDLE (WINAPI *) (HANDLE);
 
   class module_user32dll
   {
@@ -74,11 +90,27 @@ private:
 
   static module_user32dll mu_;
   static LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_;
+  static LPSETTHREADDPIAWARENESSCONTEXT lpfnSetThreadDpiAwarenessContext_;
 
   per_monitor_dpi (const per_monitor_dpi&) = delete;
   per_monitor_dpi& operator= (const per_monitor_dpi&) = delete;
   per_monitor_dpi (per_monitor_dpi&&) = delete;
   per_monitor_dpi& operator= (per_monitor_dpi&&) = delete;
+};
+
+class dpi_system_aware
+{
+public:
+  dpi_system_aware ()
+  {
+    per_monitor_dpi::SetThreadDpiAwarenessContext
+      (DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
+  }
+  ~dpi_system_aware ()
+  {
+    per_monitor_dpi::SetThreadDpiAwarenessContext
+      (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+  }
 };
 
 #endif // INCLUDE_GUARD_PER_MONITOR_DPI_HH
