@@ -39,7 +39,7 @@ per_monitor_dpi_ui<Derived>::WmDpiChanged (HWND hwnd, UINT,
 {
   LPRECT lprc {reinterpret_cast <LPRECT> (lParam)};
 
-  SetWindowPos(hwnd, NULL, lprc->left, lprc->top,
+  SetWindowPos(hwnd, nullptr, lprc->left, lprc->top,
                lprc->right - lprc->left, lprc->bottom - lprc->top,
                SWP_NOZORDER);
 

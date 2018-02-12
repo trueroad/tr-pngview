@@ -91,6 +91,6 @@ bitmap_loader::release (void)
   if (bmp_)
     {
       delete bmp_;
-      bmp_ = NULL;
+      bmp_ = nullptr;
     }
 }

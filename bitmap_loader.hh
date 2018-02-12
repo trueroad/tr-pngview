@@ -83,7 +83,7 @@ public:
 
 private:
   std::wstring filename_ {L"output.png"};
-  Gdiplus::Bitmap *bmp_ = NULL;
+  Gdiplus::Bitmap *bmp_ = nullptr;
   int width_ = 0;
   int height_ = 0;
   double aspect_ratio_ = 0;

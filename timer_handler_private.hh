@@ -58,7 +58,7 @@ LRESULT
 timer_handler<Derived>::WmCreate (HWND hwnd, UINT uMsg,
                                   WPARAM wParam, LPARAM lParam)
 {
-  SetTimer (hwnd , timerid_ , 100 , NULL); // 100 ms
+  SetTimer (hwnd , timerid_ , 100 , nullptr); // 100 ms
 
   return 0;
 }

@@ -43,7 +43,7 @@ public:
   gdiplus_init ()
   {
     Gdiplus::GdiplusStartupInput gpsi;
-    Gdiplus::GdiplusStartup (&token_, &gpsi, NULL);
+    Gdiplus::GdiplusStartup (&token_, &gpsi, nullptr);
   }
   ~gdiplus_init ()
   {

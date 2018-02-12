@@ -93,7 +93,7 @@ private:
       if (hMod_)
         return GetProcAddress (hMod_, s);
       else
-        return NULL;
+        return nullptr;
     }
 
   private:

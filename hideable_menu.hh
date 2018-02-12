@@ -58,7 +58,7 @@ protected:
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
-  HMENU hmenu_ = NULL;
+  HMENU hmenu_ = nullptr;
 };
 
 #include "hideable_menu_private.hh"

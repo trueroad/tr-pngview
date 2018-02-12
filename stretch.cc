@@ -85,7 +85,7 @@ stretch_bitmap::timer (void)
       calc_coordinate ();
       // no break
     case bitmap_loader::load_status::same_size:
-      InvalidateRect (hwnd_, NULL, FALSE);
+      InvalidateRect (hwnd_, nullptr, FALSE);
     }
 }
 
@@ -109,7 +109,7 @@ stretch_bitmap::load_file (const std::wstring &s)
   bl_.set_filename (s);
   bl_.load ();
   calc_coordinate ();
-  InvalidateRect (hwnd_, NULL, TRUE);
+  InvalidateRect (hwnd_, nullptr, TRUE);
 }
 
 void
@@ -119,7 +119,7 @@ stretch_bitmap::set_mode (mode m)
     {
       mode_ = m;
       if (hwnd_)
-        InvalidateRect (hwnd_, NULL, TRUE);
+        InvalidateRect (hwnd_, nullptr, TRUE);
     }
 
   MENUITEMINFO mii {0};

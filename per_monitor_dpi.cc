@@ -40,10 +40,10 @@ per_monitor_dpi::module_user32dll
 per_monitor_dpi::mu_;
 
 per_monitor_dpi::LPENABLENONCLIENTDPISCALING
-per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {NULL};
+per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {nullptr};
 
 per_monitor_dpi::LPSETTHREADDPIAWARENESSCONTEXT
-per_monitor_dpi::lpfnSetThreadDpiAwarenessContext_ {NULL};
+per_monitor_dpi::lpfnSetThreadDpiAwarenessContext_ {nullptr};
 
 bool
 per_monitor_dpi::bswitchaware_;
@@ -85,5 +85,5 @@ per_monitor_dpi::SetThreadDpiAwarenessContext (HANDLE haware)
 {
   if (lpfnSetThreadDpiAwarenessContext_)
     return lpfnSetThreadDpiAwarenessContext_ (haware);
-  return NULL;
+  return nullptr;
 }

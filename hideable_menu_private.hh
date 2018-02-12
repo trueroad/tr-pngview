@@ -42,7 +42,7 @@ hideable_menu<Derived>::WmSyscommand (HWND hwnd, UINT uMsg,
   if (wParam == SC_KEYMENU)
     {
       SetMenu (hwnd, hmenu_);
-      InvalidateRect (hwnd, NULL, TRUE);
+      InvalidateRect (hwnd, nullptr, TRUE);
     }
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
@@ -53,8 +53,8 @@ LRESULT
 hideable_menu<Derived>::WmExitmenuloop (HWND hwnd, UINT uMsg,
                                         WPARAM wParam, LPARAM lParam)
 {
-  SetMenu (hwnd, NULL);
-  InvalidateRect (hwnd, NULL, TRUE);
+  SetMenu (hwnd, nullptr);
+  InvalidateRect (hwnd, nullptr, TRUE);
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
@@ -75,7 +75,7 @@ LRESULT
 hideable_menu<Derived>::WmDestroy (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   DestroyMenu (hmenu_);
-  hmenu_ = NULL;
+  hmenu_ = nullptr;
 
   return 0;
 }

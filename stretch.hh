@@ -71,8 +71,8 @@ public:
   void increment_mode (void);
 
 private:
-  HWND hwnd_ = NULL;
-  HMENU hmenu_ = NULL;
+  HWND hwnd_ = nullptr;
+  HMENU hmenu_ = nullptr;
 
   int width_ = 0;
   int height_ = 0;

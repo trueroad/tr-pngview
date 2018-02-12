@@ -47,7 +47,7 @@ drag_and_drop<Derived>::WmDropfiles (HWND hwnd, UINT uMsg,
     std::wstring buff;
     HDROP hd = reinterpret_cast<HDROP> (wParam);
 
-    buff.resize (DragQueryFileW (hd, 0, NULL, 0) + 1);
+    buff.resize (DragQueryFileW (hd, 0, nullptr, 0) + 1);
     DragQueryFileW (hd, 0, &buff.at (0), buff.size ());
     DragFinish (hd);
 

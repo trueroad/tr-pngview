@@ -56,7 +56,7 @@ int
 window_class<Derived>::message_loop (void)
 {
   MSG msg;
-  while (GetMessage (&msg, NULL, 0, 0))
+  while (GetMessage (&msg, nullptr, 0, 0))
     {
       TranslateMessage (&msg);
       DispatchMessage (&msg);
@@ -104,10 +104,10 @@ window_class<Derived>::register_class (void)
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInst_;
-  wc.hIcon         = LoadIcon (NULL, IDI_APPLICATION);
-  wc.hCursor       = LoadCursor (NULL, IDC_ARROW);
+  wc.hIcon         = LoadIcon (nullptr, IDI_APPLICATION);
+  wc.hCursor       = LoadCursor (nullptr, IDC_ARROW);
   wc.hbrBackground = static_cast<HBRUSH> (GetStockObject (WHITE_BRUSH));
-  wc.lpszMenuName  = NULL;
+  wc.lpszMenuName  = nullptr;
   wc.lpszClassName = classname_;
 
   if (!RegisterClass (&wc))
@@ -123,7 +123,8 @@ window_class<Derived>::create_window (void)
   hwnd_ = CreateWindow (classname_, title_, WS_OVERLAPPEDWINDOW,
                         CW_USEDEFAULT, CW_USEDEFAULT,
                         CW_USEDEFAULT, CW_USEDEFAULT,
-                        NULL, NULL, hInst_, dynamic_cast<Derived*> (this));
+                        nullptr, nullptr, hInst_,
+                        dynamic_cast<Derived*> (this));
 
   if (!hwnd_)
     return false;
