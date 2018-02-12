@@ -90,6 +90,11 @@ private:
 
   bitmap_loader bl_;
   mode mode_ {mode::dot_by_dot};
+
+  stretch_bitmap (const stretch_bitmap&) = delete;
+  stretch_bitmap& operator= (const stretch_bitmap&) = delete;
+  stretch_bitmap (stretch_bitmap&&) = delete;
+  stretch_bitmap& operator= (stretch_bitmap&&) = delete;
 };
 
 #endif // INCLUDE_GUARD_STRETCH_HH
