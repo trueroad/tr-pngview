@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// cmd_open.hh: WM_COMMAND IDM_OPEN class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,16 +32,27 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#ifndef INCLUDE_GUARD_CMD_OPEN_HH
+#define INCLUDE_GUARD_CMD_OPEN_HH
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_ABOUT 0x121
+#include <windows.h>
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+#include "cmdmap_init_base.hh"
+
+template <class Derived>
+class cmd_open: virtual public cmdmap_init_base<Derived>
+{
+public:
+  cmd_open ()
+  {
+    this->add_temp_cmdprocmap (IDM_OPEN, Cmd_idm_open);
+  }
+  ~cmd_open () = default;
+
+private:
+  LRESULT Cmd_idm_open (HWND, WORD, WORD, LPARAM);
+};
+
+#include "cmd_open_private.hh"
+
+#endif // GUARD_CMD_OPEN_HH

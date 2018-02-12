@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// cmd_open_private.hh: WM_COMMAND IDM_OPEN class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,16 +32,26 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#include "per_monitor_dpi.hh"
+#include "fileopendialog.hh"
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_ABOUT 0x121
+template <class Derived>
+LRESULT
+cmd_open<Derived>::Cmd_idm_open (HWND hwnd, WORD, WORD, LPARAM)
+{
+  std::wstring buff;
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+  {
+    dpi_system_aware dsa;
+    buff = file_open_dialog ();
+  }
+
+  if (!buff.empty ())
+  {
+    auto &p {static_cast<Derived&> (*this)};
+
+    p.get_stretch_bitmap ().load_file (buff.c_str ());
+  }
+
+  return 0;
+}

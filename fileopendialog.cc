@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// fileopendialog.cc: File open dialog
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,16 +32,60 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#define _WIN32_WINNT 0x0600
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_ABOUT 0x121
+#include "fileopendialog.hh"
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+#include <string>
+
+#include <windows.h>
+#include <shobjidl.h>
+
+#include "com_init.hh"
+#include "com_ptr.hh"
+#include "com_heap_ptr.hh"
+
+namespace
+{
+  COMDLG_FILTERSPEC rgSpec [] =
+    {
+      { L"PNG file", L"*.png" },
+      { L"All", L"*.*" }
+    };
+}
+
+std::wstring file_open_dialog (void)
+{
+  std::wstring retval;
+  com_init ci;
+
+  if (SUCCEEDED (ci))
+  {
+    com_ptr<IFileOpenDialog> pFileOpen;
+
+    HRESULT hr = pFileOpen.CoCreateInstance (__uuidof (FileOpenDialog));
+    if (SUCCEEDED (hr))
+      {
+        pFileOpen->SetFileTypes (sizeof (rgSpec) / sizeof (rgSpec[0]),
+                                 rgSpec);
+        hr = pFileOpen->Show (nullptr);
+
+        if (SUCCEEDED (hr))
+          {
+            com_ptr<IShellItem> pItem;
+            hr = pFileOpen->GetResult (&pItem);
+
+            if (SUCCEEDED (hr))
+              {
+                com_heap_ptr<WCHAR> pszFilePath;
+                hr = pItem->GetDisplayName (SIGDN_FILESYSPATH, &pszFilePath);
+
+                if (SUCCEEDED (hr))
+                  retval = pszFilePath;
+              }
+          }
+      }
+  }
+
+  return retval;
+}

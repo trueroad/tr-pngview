@@ -42,6 +42,7 @@
 #include "mouseactivate.hh"
 #include "wm_command.hh"
 #include "cmd_about.hh"
+#include "cmd_open.hh"
 #include "cmd_exit.hh"
 #include "stretch_mode_ui.hh"
 #include "timer_handler.hh"
@@ -54,6 +55,7 @@ class pngview_window: public window_class<pngview_window>,
                       public mouseactivate<pngview_window>,
                       public wm_command<pngview_window>,
                       public cmd_about<pngview_window>,
+                      public cmd_open<pngview_window>,
                       public cmd_exit<pngview_window>,
                       public stretch_mode_ui<pngview_window>,
                       public timer_handler<pngview_window>,

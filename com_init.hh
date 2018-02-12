@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// com_init.hh: COM initialization class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,16 +32,37 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#ifndef INCLUDE_GUARD_COM_INIT_HH
+#define INCLUDE_GUARD_COM_INIT_HH
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_ABOUT 0x121
+#include <objbase.h>
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+class com_init
+{
+public:
+  com_init (DWORD dwCoInit = COINIT_APARTMENTTHREADED |
+            COINIT_DISABLE_OLE1DDE)
+  {
+    hr_ = CoInitializeEx (nullptr, dwCoInit);
+  }
+  ~com_init ()
+  {
+    if (SUCCEEDED (hr_))
+      CoUninitialize ();
+  }
+
+  operator HRESULT () const noexcept
+  {
+    return hr_;
+  }
+
+private:
+  HRESULT hr_;
+
+  com_init (const com_init&) = delete;
+  com_init& operator= (const com_init&) = delete;
+  com_init (com_init&&) = delete;
+  com_init& operator= (com_init&&) = delete;
+};
+
+#endif // INCLUDE_GUARD_COM_INIT_HH

@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// com_heap_ptr.hh: COM smart heap pointer class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,16 +32,40 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#ifndef INCLUDE_GUARD_COM_HEAP_PTR_HH
+#define INCLUDE_GUARD_COM_HEAP_PTR_HH
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_ABOUT 0x121
+template <class T>
+class com_heap_ptr
+{
+public:
+  com_heap_ptr () = default;
+  ~com_heap_ptr ()
+  {
+    if (ptr_)
+      CoTaskMemFree (ptr_);
+  }
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+  operator T* () const noexcept
+  {
+    return ptr_;
+  }
+  T& operator* () const noexcept
+  {
+    return *ptr_;
+  }
+  T** operator& () noexcept
+  {
+    return &ptr_;
+  }
+
+private:
+  T* ptr_ = nullptr;
+
+  com_heap_ptr (const com_heap_ptr&) = delete;
+  com_heap_ptr& operator= (const com_heap_ptr&) = delete;
+  com_heap_ptr (com_heap_ptr&&) = delete;
+  com_heap_ptr& operator= (com_heap_ptr&&) = delete;
+};
+
+#endif // INCLUDE_GUARD_COM_HEAP_PTR_HH
