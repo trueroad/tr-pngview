@@ -76,7 +76,7 @@ public:
   }
   ~pngview_window () = default;
 
-  stretch_bitmap &get_stretch_bitmap (void)
+  stretch_bitmap &get_stretch_bitmap (void) noexcept
   {
     return sb_;
   }

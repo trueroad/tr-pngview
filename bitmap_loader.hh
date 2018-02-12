@@ -64,19 +64,19 @@ public:
   {
     filename_ = s;
   }
-  Gdiplus::Bitmap *get (void)
+  Gdiplus::Bitmap *get (void) const noexcept
   {
     return bmp_;
   }
-  int width (void)
+  int width (void) const noexcept
   {
     return width_;
   }
-  int height (void)
+  int height (void) const noexcept
   {
     return height_;
   }
-  double aspect_ratio (void)
+  double aspect_ratio (void) const noexcept
   {
     return aspect_ratio_;
   }

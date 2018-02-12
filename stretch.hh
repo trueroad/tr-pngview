@@ -63,7 +63,7 @@ public:
   void window_size (WORD, WORD);
   void load_file (const std::wstring &s);
 
-  mode get_mode (void)
+  mode get_mode (void) const noexcept
   {
     return mode_;
   }

@@ -50,11 +50,11 @@ public:
   window_class () = default;
   virtual ~window_class () = default;
 
-  HINSTANCE get_hInst (void)
+  HINSTANCE get_hInst (void) const noexcept
   {
     return hInst_;
   }
-  HWND get_hwnd (void)
+  HWND get_hwnd (void) const noexcept
   {
     return hwnd_;
   }

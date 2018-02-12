@@ -64,7 +64,7 @@ public:
   per_monitor_dpi ();
   ~per_monitor_dpi () = default;
 
-  static bool get_switch_aware (void)
+  static bool get_switch_aware (void) noexcept
   {
     return bswitchaware_;
   }
