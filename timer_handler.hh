@@ -57,7 +57,7 @@ protected:
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
 private:
-  const UINT_PTR timerid_ = 1;
+  const UINT_PTR timerid_ {1};
 };
 
 #include "timer_handler_private.hh"

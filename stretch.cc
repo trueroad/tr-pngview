@@ -175,11 +175,11 @@ stretch_bitmap::increment_mode (void)
 void
 stretch_bitmap::calc_coordinate (void)
 {
-  auto zoom_ratio_height = static_cast<double> (height_) / bl_.height ();
-  auto bmp_zoomed_width = zoom_ratio_height * bl_.width ();
+  auto zoom_ratio_height {static_cast<double> (height_) / bl_.height ()};
+  auto bmp_zoomed_width {zoom_ratio_height * bl_.width ()};
 
-  auto zoom_ratio_width = static_cast<double> (width_) / bl_.width ();
-  auto bmp_zoomed_height = zoom_ratio_width * bl_.height ();
+  auto zoom_ratio_width {static_cast<double> (width_) / bl_.width ()};
+  auto bmp_zoomed_height {zoom_ratio_width * bl_.height ()};
 
   if (aspect_ratio_ > bl_.aspect_ratio ())
     {

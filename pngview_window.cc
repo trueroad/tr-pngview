@@ -44,7 +44,7 @@ LRESULT
 pngview_window::WmPaint (HWND hwnd, UINT, WPARAM, LPARAM)
 {
   PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
+  HDC hdc {BeginPaint (hwnd, &ps)};
 
   sb_.paint (hdc);
 

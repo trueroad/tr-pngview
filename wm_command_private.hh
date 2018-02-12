@@ -42,7 +42,7 @@ wm_command<Derived>::WmCommand (HWND hwnd, UINT uMsg,
   auto wCode {HIWORD (wParam)};
   auto wId {LOWORD (wParam)};
 
-  auto val = cmdprocs_.find (wId);
+  auto val {cmdprocs_.find (wId)};
   if (val != cmdprocs_.end ())
     return (p.*(val->second)) (hwnd, wCode, wId, lParam);
   return DefWindowProc (hwnd, uMsg, wParam, lParam);

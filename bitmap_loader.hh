@@ -83,12 +83,12 @@ public:
 
 private:
   std::wstring filename_ {L"output.png"};
-  Gdiplus::Bitmap *bmp_ = nullptr;
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  off_t size_ = 0;
-  time_t mtime_ = 0;
+  Gdiplus::Bitmap *bmp_ {nullptr};
+  int width_ {0};
+  int height_ {0};
+  double aspect_ratio_ {0};
+  off_t size_ {0};
+  time_t mtime_ {0};
 
   bitmap_loader (const bitmap_loader&) = delete;
   bitmap_loader& operator= (const bitmap_loader&) = delete;

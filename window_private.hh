@@ -85,7 +85,7 @@ window_class<Derived>::wndproc_static (HWND hwnd, UINT uMsg,
 
   if (wc)
     {
-      auto val = wc->procedures_.find (uMsg);
+      auto val {wc->procedures_.find (uMsg)};
       if (val != wc->procedures_.end ())
         return (wc->*(val->second)) (hwnd, uMsg, wParam, lParam);
     }

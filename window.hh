@@ -79,8 +79,8 @@ protected:
   bool create_window (void);
   void show_and_update_window (int);
 
-  HINSTANCE hInst_ = nullptr;
-  HWND hwnd_ = nullptr;
+  HINSTANCE hInst_ {nullptr};
+  HWND hwnd_ {nullptr};
 
 private:
   static LRESULT CALLBACK wndproc_static (HWND, UINT, WPARAM, LPARAM);

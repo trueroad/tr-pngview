@@ -71,25 +71,25 @@ public:
   void increment_mode (void);
 
 private:
-  HWND hwnd_ = nullptr;
-  HMENU hmenu_ = nullptr;
+  HWND hwnd_ {nullptr};
+  HMENU hmenu_ {nullptr};
 
-  int width_ = 0;
-  int height_ = 0;
-  double aspect_ratio_ = 0;
-  int stretch_contain_x_ = 0;
-  int stretch_contain_y_ = 0;
-  int stretch_contain_width_ = 0;
-  int stretch_contain_height_ = 0;
-  int stretch_cover_x_ = 0;
-  int stretch_cover_y_ = 0;
-  int stretch_cover_width_ = 0;
-  int stretch_cover_height_ = 0;
+  int width_ {0};
+  int height_ {0};
+  double aspect_ratio_ {0};
+  int stretch_contain_x_ {0};
+  int stretch_contain_y_ {0};
+  int stretch_contain_width_ {0};
+  int stretch_contain_height_ {0};
+  int stretch_cover_x_ {0};
+  int stretch_cover_y_ {0};
+  int stretch_cover_width_ {0};
+  int stretch_cover_height_ {0};
 
   void calc_coordinate (void);
 
   bitmap_loader bl_;
-  mode mode_ = mode::dot_by_dot;
+  mode mode_ {mode::dot_by_dot};
 };
 
 #endif // INCLUDE_GUARD_STRETCH_HH
