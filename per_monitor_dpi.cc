@@ -80,8 +80,8 @@ per_monitor_dpi::EnableNonClientDpiScaling (HWND hwnd)
 }
 
 // SetThreadDpiAwarenessContext: Windows 10 Anniversary Update (1607) +
-HANDLE
-per_monitor_dpi::SetThreadDpiAwarenessContext (HANDLE haware)
+DPI_AWARENESS_CONTEXT
+per_monitor_dpi::SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT haware)
 {
   if (lpfnSetThreadDpiAwarenessContext_)
     return lpfnSetThreadDpiAwarenessContext_ (haware);

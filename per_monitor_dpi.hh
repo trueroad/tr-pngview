@@ -37,25 +37,33 @@
 
 #include <windows.h>
 
+// DPI_AWARENESS_CONTEXT handle
+#if !defined (DPI_AWARENESS_CONTEXT_UNAWARE) && \
+  !defined (DPI_AWARENESS_CONTEXT_SYSTEM_AWARE) && \
+  !defined (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE) && \
+  !defined (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
+DECLARE_HANDLE(DPI_AWARENESS_CONTEXT);
+#endif
+
 // DPI_AWARENESS_CONTEXT_SYSTEM_AWARE:
 //   Windows 10 Anniversary Update (1607) +
 #ifndef DPI_AWARENESS_CONTEXT_SYSTEM_AWARE
 #define DPI_AWARENESS_CONTEXT_SYSTEM_AWARE \
-  (reinterpret_cast<HANDLE> (-2))
+  (reinterpret_cast<DPI_AWARENESS_CONTEXT> (-2))
 #endif
 
 // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE:
 //   Windows 10 Anniversary Update (1607) +
 #ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE
 #define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE \
-  (reinterpret_cast<HANDLE> (-3))
+  (reinterpret_cast<DPI_AWARENESS_CONTEXT> (-3))
 #endif
 
 // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:
 //   Windows 10 Creators Update (1703) +
 #ifndef DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 #define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 \
-  (reinterpret_cast<HANDLE> (-4))
+  (reinterpret_cast<DPI_AWARENESS_CONTEXT> (-4))
 #endif
 
 class per_monitor_dpi
@@ -70,11 +78,13 @@ public:
   }
 
   static void EnableNonClientDpiScaling (HWND);
-  static HANDLE SetThreadDpiAwarenessContext (HANDLE);
+  static DPI_AWARENESS_CONTEXT
+  SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT);
 
 private:
   using LPENABLENONCLIENTDPISCALING = BOOL (WINAPI *) (HWND);
-  using LPSETTHREADDPIAWARENESSCONTEXT = HANDLE (WINAPI *) (HANDLE);
+  using LPSETTHREADDPIAWARENESSCONTEXT = DPI_AWARENESS_CONTEXT
+    (WINAPI *) (DPI_AWARENESS_CONTEXT);
 
   class module_user32dll
   {
