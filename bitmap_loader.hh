@@ -76,6 +76,14 @@ public:
   {
     return height_;
   }
+  double dpi_x (void) const noexcept
+  {
+    return dpi_x_;
+  }
+  double dpi_y (void) const noexcept
+  {
+    return dpi_y_;
+  }
   double aspect_ratio (void) const noexcept
   {
     return aspect_ratio_;
@@ -86,6 +94,8 @@ private:
   Gdiplus::Bitmap *bmp_ {nullptr};
   int width_ {0};
   int height_ {0};
+  double dpi_x_ {0};
+  double dpi_y_ {0};
   double aspect_ratio_ {0};
   off_t size_ {0};
   time_t mtime_ {0};

@@ -70,6 +70,9 @@ bitmap_loader::load (void)
   bmp_->SetResolution (tmp_bmp.GetHorizontalResolution (),
                        tmp_bmp.GetVerticalResolution ());
 
+  dpi_x_ = tmp_bmp.GetHorizontalResolution ();
+  dpi_y_ = tmp_bmp.GetVerticalResolution ();
+
   Gdiplus::Graphics offscreen {bmp_};
   offscreen.DrawImage (&tmp_bmp, 0, 0, width_, height_);
 
