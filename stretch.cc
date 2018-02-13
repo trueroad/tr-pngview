@@ -209,4 +209,13 @@ stretch_bitmap::calc_coordinate (void)
       stretch_cover_y_ = 0;
       stretch_cover_height_ = height_;
     }
+
+  if (dpi_x_ > 1 && bl_.dpi_x () > 1)
+    stretch_dpi_width_ = MulDiv (bl_.width (), dpi_x_, bl_.dpi_x ());
+  else
+    stretch_dpi_width_ = bl_.width ();
+  if (dpi_y_ > 1 && bl_.dpi_y () > 1)
+    stretch_dpi_height_ = MulDiv (bl_.height (), dpi_y_, bl_.dpi_y ());
+  else
+    stretch_dpi_height_ = bl_.height ();
 }

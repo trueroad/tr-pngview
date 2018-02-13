@@ -94,6 +94,8 @@ private:
   int stretch_cover_y_ {0};
   int stretch_cover_width_ {0};
   int stretch_cover_height_ {0};
+  int stretch_dpi_width_ {0};
+  int stretch_dpi_height_ {0};
 
   void calc_coordinate (void);
 
