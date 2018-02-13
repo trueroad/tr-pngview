@@ -80,11 +80,13 @@ public:
   static void EnableNonClientDpiScaling (HWND);
   static DPI_AWARENESS_CONTEXT
   SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT);
+  static UINT GetDpiForWindow (HWND);
 
 private:
   using LPENABLENONCLIENTDPISCALING = BOOL (WINAPI *) (HWND);
   using LPSETTHREADDPIAWARENESSCONTEXT = DPI_AWARENESS_CONTEXT
     (WINAPI *) (DPI_AWARENESS_CONTEXT);
+  using LPGETDPIFORWINDOW = UINT (WINAPI *) (HWND);
 
   class module_user32dll
   {
@@ -113,6 +115,7 @@ private:
   static module_user32dll mu_;
   static LPENABLENONCLIENTDPISCALING lpfnEnableNonClientDpiScaling_;
   static LPSETTHREADDPIAWARENESSCONTEXT lpfnSetThreadDpiAwarenessContext_;
+  static LPGETDPIFORWINDOW lpfnGetDpiForWindow_;
   static bool bswitchaware_;
 
   per_monitor_dpi (const per_monitor_dpi&) = delete;

@@ -45,6 +45,9 @@ per_monitor_dpi::lpfnEnableNonClientDpiScaling_ {nullptr};
 per_monitor_dpi::LPSETTHREADDPIAWARENESSCONTEXT
 per_monitor_dpi::lpfnSetThreadDpiAwarenessContext_ {nullptr};
 
+per_monitor_dpi::LPGETDPIFORWINDOW
+per_monitor_dpi::lpfnGetDpiForWindow_ {nullptr};
+
 bool
 per_monitor_dpi::bswitchaware_;
 
@@ -56,6 +59,9 @@ per_monitor_dpi::per_monitor_dpi ()
   lpfnSetThreadDpiAwarenessContext_ =
     reinterpret_cast<LPSETTHREADDPIAWARENESSCONTEXT>
     (mu_.get_proc_address ("SetThreadDpiAwarenessContext"));
+  lpfnGetDpiForWindow_ =
+    reinterpret_cast<LPGETDPIFORWINDOW>
+    (mu_.get_proc_address ("GetDpiForWindow"));
 
   if (SetThreadDpiAwarenessContext
       (DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
@@ -86,4 +92,13 @@ per_monitor_dpi::SetThreadDpiAwarenessContext (DPI_AWARENESS_CONTEXT haware)
   if (lpfnSetThreadDpiAwarenessContext_)
     return lpfnSetThreadDpiAwarenessContext_ (haware);
   return nullptr;
+}
+
+// GetDpiForWindow: Windows 10 Anniversary Update (1607) +
+UINT
+per_monitor_dpi::GetDpiForWindow (HWND hwnd)
+{
+  if (lpfnGetDpiForWindow_)
+    return lpfnGetDpiForWindow_ (hwnd);
+  return 0;
 }
