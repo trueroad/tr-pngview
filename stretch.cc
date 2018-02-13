@@ -58,7 +58,7 @@ stretch_bitmap::paint (HDC hdc)
   switch (mode_)
     {
     case mode::dot_by_dot:
-      g.DrawImage (bl_.get (), 0, 0);
+      g.DrawImage (bl_.get (), 0, 0, bl_.width (), bl_.height ());
       break;
     case mode::fill:
       g.DrawImage (bl_.get (), 0, 0, width_, height_);
