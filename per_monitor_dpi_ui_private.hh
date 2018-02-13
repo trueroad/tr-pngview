@@ -35,9 +35,12 @@
 template <class Derived>
 LRESULT
 per_monitor_dpi_ui<Derived>::WmDpiChanged (HWND hwnd, UINT,
-                                           WPARAM, LPARAM lParam)
+                                           WPARAM wParam, LPARAM lParam)
 {
   LPRECT lprc {reinterpret_cast <LPRECT> (lParam)};
+
+  auto &p {static_cast<Derived&> (*this)};
+  p.get_stretch_bitmap ().set_dpi (LOWORD (wParam), HIWORD (wParam));
 
   SetWindowPos(hwnd, nullptr, lprc->left, lprc->top,
                lprc->right - lprc->left, lprc->bottom - lprc->top,
@@ -52,6 +55,10 @@ per_monitor_dpi_ui<Derived>::WmNcCreate (HWND hwnd, UINT uMsg,
                                          WPARAM wParam, LPARAM lParam)
 {
   pmd.EnableNonClientDpiScaling (hwnd);
+
+  UINT dpi = pmd.GetDpiForWindow (hwnd);
+  auto &p {static_cast<Derived&> (*this)};
+  p.get_stretch_bitmap ().set_dpi (dpi, dpi);
 
   return DefWindowProc (hwnd, uMsg, wParam, lParam);
 }
