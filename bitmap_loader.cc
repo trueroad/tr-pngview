@@ -71,7 +71,7 @@ bitmap_loader::load (void)
                        tmp_bmp.GetVerticalResolution ());
 
   Gdiplus::Graphics offscreen {bmp_};
-  offscreen.DrawImage (&tmp_bmp, 0, 0);
+  offscreen.DrawImage (&tmp_bmp, 0, 0, width_, height_);
 
   size_ = st.st_size;
   mtime_ = st.st_mtime;
