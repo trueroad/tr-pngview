@@ -52,13 +52,13 @@ bitmap_loader::load (void)
   Gdiplus::Bitmap tmp_bmp {filename_.c_str ()};
 
   load_status retval {load_status::same_size};
-  auto w = tmp_bmp.GetWidth ();
+  auto w {tmp_bmp.GetWidth ()};
   if (w != width_)
     {
       width_ = w;
       retval = load_status::size_changed;
     }
-  auto h = tmp_bmp.GetHeight ();
+  auto h {tmp_bmp.GetHeight ()};
   if (h != height_)
     {
       height_ = h;
