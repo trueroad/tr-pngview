@@ -50,20 +50,22 @@ public:
   {
     this->add_temp_procmap (WM_LBUTTONDOWN, WmLbuttondown);
 
-    this->add_temp_cmdprocmap (IDM_DOT_BY_DOT, Cmd_idm_dot_by_dot);
+    this->add_temp_cmdprocmap (IDM_DPI_SCALING, Cmd_idm_dpi_scaling);
     this->add_temp_cmdprocmap (IDM_FILL, Cmd_idm_fill);
     this->add_temp_cmdprocmap (IDM_CONTAIN, Cmd_idm_contain);
     this->add_temp_cmdprocmap (IDM_COVER, Cmd_idm_cover);
+    this->add_temp_cmdprocmap (IDM_DOT_BY_DOT, Cmd_idm_dot_by_dot);
   }
   ~stretch_mode_ui () = default;
 
 private:
   LRESULT WmLbuttondown (HWND, UINT, WPARAM, LPARAM);
 
-  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_dpi_scaling (HWND, WORD, WORD, LPARAM);
   LRESULT Cmd_idm_fill (HWND, WORD, WORD, LPARAM);
   LRESULT Cmd_idm_contain (HWND, WORD, WORD, LPARAM);
   LRESULT Cmd_idm_cover (HWND, WORD, WORD, LPARAM);
+  LRESULT Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM);
 };
 
 #include "stretch_mode_ui_private.hh"

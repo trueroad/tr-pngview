@@ -38,10 +38,11 @@
 #define IDM_MENU 0x201
 #define IDM_OPEN 0x101
 #define IDM_EXIT 0x102
-#define IDM_DOT_BY_DOT 0x111
+#define IDM_DPI_SCALING 0x111
 #define IDM_FILL 0x112
 #define IDM_CONTAIN 0x113
 #define IDM_COVER 0x114
+#define IDM_DOT_BY_DOT 0x115
 #define IDM_ABOUT 0x121
 
 #endif // INCLUDE_GUARD_PNGVIEW_RES_H

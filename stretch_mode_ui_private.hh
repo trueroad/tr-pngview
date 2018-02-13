@@ -49,11 +49,11 @@ stretch_mode_ui<Derived>::WmLbuttondown (HWND hwnd, UINT, WPARAM, LPARAM)
 
 template <class Derived>
 LRESULT
-stretch_mode_ui<Derived>::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
+stretch_mode_ui<Derived>::Cmd_idm_dpi_scaling (HWND, WORD, WORD, LPARAM)
 {
   auto &p {static_cast<Derived&> (*this)};
 
-  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::dot_by_dot);
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::dpi_scaling);
 
   return 0;
 }
@@ -87,6 +87,17 @@ stretch_mode_ui<Derived>::Cmd_idm_cover (HWND, WORD, WORD, LPARAM)
   auto &p {static_cast<Derived&> (*this)};
 
   p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::cover);
+
+  return 0;
+}
+
+template <class Derived>
+LRESULT
+stretch_mode_ui<Derived>::Cmd_idm_dot_by_dot (HWND, WORD, WORD, LPARAM)
+{
+  auto &p {static_cast<Derived&> (*this)};
+
+  p.get_stretch_bitmap ().set_mode (stretch_bitmap::mode::dot_by_dot);
 
   return 0;
 }

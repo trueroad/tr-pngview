@@ -57,8 +57,9 @@ stretch_bitmap::paint (HDC hdc)
   Gdiplus::Graphics g {hdc};
   switch (mode_)
     {
-    case mode::dot_by_dot:
-      g.DrawImage (bl_.get (), 0, 0, bl_.width (), bl_.height ());
+    case mode::dpi_scaling:
+      g.DrawImage (bl_.get (), 0, 0,
+                   stretch_dpi_width_, stretch_dpi_height_);
       break;
     case mode::fill:
       g.DrawImage (bl_.get (), 0, 0, width_, height_);
@@ -72,6 +73,9 @@ stretch_bitmap::paint (HDC hdc)
       g.DrawImage (bl_.get (),
                    stretch_cover_x_, stretch_cover_y_,
                    stretch_cover_width_, stretch_cover_height_);
+      break;
+    case mode::dot_by_dot:
+      g.DrawImage (bl_.get (), 0, 0, bl_.width (), bl_.height ());
       break;
     }
 }
@@ -127,8 +131,8 @@ stretch_bitmap::set_mode (mode m)
   mii.fMask = MIIM_STATE;
 
   mii.fState =
-    (mode_ == mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED);
-  SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
+    (mode_ == mode::dpi_scaling ? MFS_CHECKED : MFS_UNCHECKED);
+  SetMenuItemInfo (hmenu_, IDM_DPI_SCALING, FALSE, &mii);
 
   mii.fState =
     (mode_ == mode::fill ? MFS_CHECKED : MFS_UNCHECKED);
@@ -142,6 +146,10 @@ stretch_bitmap::set_mode (mode m)
     (mode_ == mode::cover ? MFS_CHECKED : MFS_UNCHECKED);
   SetMenuItemInfo (hmenu_, IDM_COVER, FALSE, &mii);
 
+  mii.fState =
+    (mode_ == mode::dot_by_dot ? MFS_CHECKED : MFS_UNCHECKED);
+  SetMenuItemInfo (hmenu_, IDM_DOT_BY_DOT, FALSE, &mii);
+
   if (hwnd_)
     DrawMenuBar (hwnd_);
 }
@@ -153,7 +161,7 @@ stretch_bitmap::increment_mode (void)
 
   switch (mode_)
     {
-    case mode::dot_by_dot:
+    case mode::dpi_scaling:
       m = mode::fill;
       break;
     case mode::fill:
@@ -164,6 +172,9 @@ stretch_bitmap::increment_mode (void)
       break;
     case mode::cover:
       m = mode::dot_by_dot;
+      break;
+    case mode::dot_by_dot:
+      m = mode::dpi_scaling;
       break;
     default:
       m = mode_;

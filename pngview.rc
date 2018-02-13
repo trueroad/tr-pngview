@@ -77,10 +77,11 @@ IDM_MENU MENU
   MENUITEM "E&xit", IDM_EXIT
  }
  POPUP "&Mode" {
-  MENUITEM "&Dot by dot", IDM_DOT_BY_DOT
+  MENUITEM "&DPI scaling", IDM_DPI_SCALING
   MENUITEM "&Fill", IDM_FILL
   MENUITEM "&Contain", IDM_CONTAIN
   MENUITEM "Co&ver", IDM_COVER
+  MENUITEM "Dot &by dot", IDM_DOT_BY_DOT
  }
  POPUP "&Help" {
   MENUITEM "&About...", IDM_ABOUT

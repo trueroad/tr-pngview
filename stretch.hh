@@ -44,7 +44,7 @@
 class stretch_bitmap
 {
 public:
-  enum class mode {dot_by_dot, fill, contain, cover};
+  enum class mode {dpi_scaling, fill, contain, cover, dot_by_dot};
 
   stretch_bitmap () = default;
   ~stretch_bitmap ()
@@ -100,7 +100,7 @@ private:
   void calc_coordinate (void);
 
   bitmap_loader bl_;
-  mode mode_ {mode::dot_by_dot};
+  mode mode_ {mode::dpi_scaling};
 
   stretch_bitmap (const stretch_bitmap&) = delete;
   stretch_bitmap& operator= (const stretch_bitmap&) = delete;
