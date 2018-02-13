@@ -90,7 +90,7 @@ public:
   }
 
 private:
-  std::wstring filename_ {L"output.png"};
+  std::wstring filename_ {L"pngview.png"};
   Gdiplus::Bitmap *bmp_ {nullptr};
   int width_ {0};
   int height_ {0};
