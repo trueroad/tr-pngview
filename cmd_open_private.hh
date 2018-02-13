@@ -40,18 +40,15 @@ LRESULT
 cmd_open<Derived>::Cmd_idm_open (HWND hwnd, WORD, WORD, LPARAM)
 {
   std::wstring buff;
+  auto &p {static_cast<Derived&> (*this)};
 
   {
     dpi_system_aware dsa;
-    buff = file_open_dialog ();
+    buff = file_open_dialog (p.get_stretch_bitmap ().get_filename ());
   }
 
   if (!buff.empty ())
-  {
-    auto &p {static_cast<Derived&> (*this)};
-
     p.get_stretch_bitmap ().load_file (buff.c_str ());
-  }
 
   return 0;
 }

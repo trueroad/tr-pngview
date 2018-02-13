@@ -54,7 +54,7 @@ namespace
     };
 }
 
-std::wstring file_open_dialog (void)
+std::wstring file_open_dialog (const std::wstring &prev_name)
 {
   std::wstring retval;
   com_init ci;
@@ -68,6 +68,8 @@ std::wstring file_open_dialog (void)
       {
         pFileOpen->SetFileTypes (sizeof (rgSpec) / sizeof (rgSpec[0]),
                                  rgSpec);
+        if (!prev_name.empty ())
+          pFileOpen->SetFileName (prev_name.c_str ());
         hr = pFileOpen->Show (nullptr);
 
         if (SUCCEEDED (hr))

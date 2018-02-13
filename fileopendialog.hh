@@ -37,6 +37,6 @@
 
 #include <string>
 
-std::wstring file_open_dialog (void);
+std::wstring file_open_dialog (const std::wstring &);
 
 #endif // INCLUDE_GUARD_FILEOPENDIALOG_HH
