@@ -67,6 +67,8 @@ bitmap_loader::load (void)
 
   release ();
   bmp_ = new Gdiplus::Bitmap (width_, height_);
+  bmp_->SetResolution (tmp_bmp.GetHorizontalResolution (),
+                       tmp_bmp.GetVerticalResolution ());
 
   Gdiplus::Graphics offscreen {bmp_};
   offscreen.DrawImage (&tmp_bmp, 0, 0);
