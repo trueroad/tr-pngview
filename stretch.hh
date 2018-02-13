@@ -62,6 +62,11 @@ public:
   void timer (void);
   void window_size (WORD, WORD);
   void load_file (const std::wstring &s);
+  void set_dpi (UINT x, UINT y) noexcept
+  {
+    dpi_x_ = x;
+    dpi_y_ = y;
+  }
 
   mode get_mode (void) const noexcept
   {
@@ -77,6 +82,10 @@ private:
   int width_ {0};
   int height_ {0};
   double aspect_ratio_ {0};
+
+  UINT dpi_x_ {0};
+  UINT dpi_y_ {0};
+
   int stretch_contain_x_ {0};
   int stretch_contain_y_ {0};
   int stretch_contain_width_ {0};
