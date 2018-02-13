@@ -62,6 +62,10 @@ public:
   void timer (void);
   void window_size (WORD, WORD);
   void load_file (const std::wstring &s);
+  const std::wstring &get_filename (void) const
+  {
+    return bl_.get_filename ();
+  }
   void set_dpi (UINT x, UINT y) noexcept
   {
     dpi_x_ = x;

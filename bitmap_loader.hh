@@ -64,6 +64,10 @@ public:
   {
     filename_ = s;
   }
+  const std::wstring &get_filename (void) const
+  {
+    return filename_;
+  }
   Gdiplus::Bitmap *get (void) const noexcept
   {
     return bmp_;
