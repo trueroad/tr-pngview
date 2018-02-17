@@ -33,22 +33,16 @@
 //
 
 #include "per_monitor_dpi.hh"
-#include "version.h"
+#include "about.hh"
 
 template <class Derived>
 LRESULT
 cmd_about<Derived>::Cmd_idm_about (HWND hwnd, WORD, WORD, LPARAM)
 {
+  auto &p {static_cast<Derived&> (*this)};
   dpi_system_aware dsa;
 
-  MessageBox (hwnd,
-              TEXT (PACKAGE_NAME) TEXT (" ")
-              TEXT (PACKAGE_VERSION) TEXT ("\n")
-              TEXT (PACKAGE_COPYRIGHT) TEXT ("\n")
-              TEXT (PACKAGE_LICENSE) TEXT ("\n\n")
-              TEXT (PACKAGE_URL),
-              TEXT ("About") TEXT (" ") TEXT(PACKAGE_NAME),
-              MB_OK);
+  about_dialog (p.get_hInst (), hwnd);
 
   return 0;
 }
