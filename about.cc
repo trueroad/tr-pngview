@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// about.cc: About dialog
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,23 +32,15 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#include "about.hh"
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DPI_SCALING 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_DOT_BY_DOT 0x115
-#define IDM_ABOUT 0x121
+#include <windows.h>
 
-#define IDD_ABOUT 0x301
+#include "about_dialog_ui.hh"
+#include "pngview_res.h"
 
-#ifndef IDC_STATIC
-#define IDC_STATIC -1
-#endif
-
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+void about_dialog (HINSTANCE hinst, HWND hwnd)
+{
+  about_dialog_ui ad;
+  ad.dialogbox (hinst, MAKEINTRESOURCE (IDD_ABOUT), hwnd);
+}
