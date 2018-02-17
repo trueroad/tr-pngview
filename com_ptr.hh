@@ -43,8 +43,8 @@ class com_ptr
   class disable_AddRef_Release: public T
   {
   private:
-    ULONG AddRef ();
-    ULONG Release ();
+    STDMETHODIMP_(ULONG) AddRef ();
+    STDMETHODIMP_(ULONG) Release ();
   };
 
 public:
