@@ -47,6 +47,8 @@
 
 #define IDD_ABOUT 0x301
 
+#define IDC_PACKAGE_URL 0x401
+
 #ifndef IDC_STATIC
 #define IDC_STATIC -1
 #endif
