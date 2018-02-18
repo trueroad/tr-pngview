@@ -32,6 +32,7 @@
 // SUCH DAMAGE.
 //
 
+#include "util.hh"
 #include "pngview_res.h"
 
 INT_PTR
@@ -54,8 +55,12 @@ timer_dialog_ui::Idok (HWND hwnd, WORD, WORD, LPARAM)
 
   if (!bsuccess)
     {
-      MessageBox (hwnd, TEXT ("Invalid"), TEXT ("Error"),
-                  MB_ICONERROR | MB_OK);
+      auto hinst {GetModuleHandle (nullptr)};
+      std::wstring str_invalid {get_resource_string (IDS_INVALID, hinst)};
+      std::wstring str_error {get_resource_string (IDS_ERROR, hinst)};
+
+      MessageBoxW (hwnd, str_invalid.c_str (), str_error.c_str (),
+                   MB_ICONERROR | MB_OK);
       SetDlgItemInt (hwnd, IDC_TIMER, interval_, FALSE);
 
       return TRUE;
@@ -63,16 +68,24 @@ timer_dialog_ui::Idok (HWND hwnd, WORD, WORD, LPARAM)
 
   if ( i < USER_TIMER_MINIMUM )
     {
-      MessageBox (hwnd, TEXT ("Too small"), TEXT ("Warning"),
-                  MB_ICONWARNING | MB_OK);
+      auto hinst {GetModuleHandle (nullptr)};
+      std::wstring str_small {get_resource_string (IDS_SMALL, hinst)};
+      std::wstring str_warning {get_resource_string (IDS_WARNING, hinst)};
+
+      MessageBoxW (hwnd, str_small.c_str (), str_warning.c_str (),
+                   MB_ICONWARNING | MB_OK);
       SetDlgItemInt (hwnd, IDC_TIMER, USER_TIMER_MINIMUM, FALSE);
 
       return TRUE;
     }
   else if ( i > USER_TIMER_MAXIMUM )
     {
-      MessageBox (hwnd, TEXT ("Too large"), TEXT ("Warning"),
-                  MB_ICONWARNING | MB_OK);
+      auto hinst {GetModuleHandle (nullptr)};
+      std::wstring str_large {get_resource_string (IDS_LARGE, hinst)};
+      std::wstring str_warning {get_resource_string (IDS_WARNING, hinst)};
+
+      MessageBoxW (hwnd, str_large.c_str (), str_warning.c_str (),
+                   MB_ICONWARNING | MB_OK);
       SetDlgItemInt (hwnd, IDC_TIMER, USER_TIMER_MAXIMUM, FALSE);
 
       return TRUE;

@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// pngview_res.h: Resource header
+// util.hh: Utility
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,35 +32,26 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_PNGVIEW_RES_H
-#define INCLUDE_GUARD_PNGVIEW_RES_H
+#ifndef INCLUDE_GUARD_UTIL_HH
+#define INCLUDE_GUARD_UTIL_HH
 
-#define IDM_MENU 0x201
-#define IDM_OPEN 0x101
-#define IDM_EXIT 0x102
-#define IDM_DPI_SCALING 0x111
-#define IDM_FILL 0x112
-#define IDM_CONTAIN 0x113
-#define IDM_COVER 0x114
-#define IDM_DOT_BY_DOT 0x115
-#define IDM_USE_TIMER 0x121
-#define IDM_SET_INTERVAL 0x122
-#define IDM_ABOUT 0x131
+#include <string>
 
-#define IDD_ABOUT 0x301
-#define IDD_TIMER 0x302
+#include <windows.h>
 
-#define IDC_PACKAGE_URL 0x401
-#define IDC_TIMER 0x402
+inline
+std::wstring
+get_resource_string (UINT uId, HINSTANCE hinst = GetModuleHandle (nullptr))
+{
+  LPCWSTR pbuff;
+  int size;
 
-#define IDS_ERROR 0x501
-#define IDS_WARNING 0x502
-#define IDS_INVALID 0x503
-#define IDS_SMALL 0x504
-#define IDS_LARGE 0x505
+  std::wstring str;
+  size = LoadStringW (hinst, uId, reinterpret_cast<LPWSTR> (&pbuff), 0);
+  if (size)
+    str.assign (pbuff, size);
 
-#ifndef IDC_STATIC
-#define IDC_STATIC -1
-#endif
+  return str;
+}
 
-#endif // INCLUDE_GUARD_PNGVIEW_RES_H
+#endif // INCLUDE_GUARD_UTIL_HH

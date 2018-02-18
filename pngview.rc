@@ -114,3 +114,12 @@ BEGIN
     EDITTEXT IDC_TIMER, 14, 14, 100, 14
     LTEXT "ms", IDC_STATIC, 120, 14, 50, 14
 END
+
+STRINGTABLE
+BEGIN
+   IDS_ERROR "Error"
+   IDS_WARNING "Warning"
+   IDS_INVALID "Invalid"
+   IDS_SMALL "Too small"
+   IDS_LARGE "Too large"
+END
