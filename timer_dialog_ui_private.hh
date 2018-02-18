@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// timer_handler.hh: Timer handler class
+// timer_dialog_ui_private.hh: timer dialog box UI class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,47 +32,61 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_TIMER_HANDLER_HH
-#define INCLUDE_GUARD_TIMER_HANDLER_HH
-
-#include <windows.h>
-
-#include "procmap_init_base.hh"
-#include "cmdmap_init_base.hh"
 #include "pngview_res.h"
 
-template <class Derived>
-class timer_handler:  virtual public procmap_init_base<Derived>,
-                      virtual public cmdmap_init_base<Derived>
+INT_PTR
+timer_dialog_ui::WmInitdialog (HWND hwnd, UINT uMsg,
+                                        WPARAM wParam, LPARAM lParam)
 {
-public:
-  timer_handler ()
-  {
-    this->add_temp_procmap (WM_TIMER, WmTimer);
-    this->add_temp_procmap (WM_CREATE, WmCreate);
-    this->add_temp_procmap (WM_DESTROY, WmDestroy);
+  SetDlgItemInt (hwnd, IDC_TIMER, interval_, FALSE);
 
-    this->add_temp_cmdprocmap (IDM_USE_TIMER, Cmd_idm_use_timer);
-    this->add_temp_cmdprocmap (IDM_SET_INTERVAL, Cmd_idm_set_interval);
-  }
-  ~timer_handler () = default;
+  return dialogbox_class<timer_dialog_ui>::WmInitdialog
+    (hwnd, uMsg, wParam, lParam);
+}
 
-protected:
-  LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
+INT_PTR
+timer_dialog_ui::Idok (HWND hwnd, WORD, WORD, LPARAM)
+{
+  UINT i;
+  BOOL bsuccess;
 
-  LRESULT Cmd_idm_use_timer (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_set_interval (HWND, WORD, WORD, LPARAM);
+  i = GetDlgItemInt (hwnd, IDC_TIMER, &bsuccess, FALSE);
 
-private:
-  const UINT_PTR timerid_ {1};
-  bool btimer_ {true};
-  UINT interval_ {100}; // 100 ms
+  if (!bsuccess)
+    {
+      MessageBox (hwnd, TEXT ("Invalid"), TEXT ("Error"),
+                  MB_ICONERROR | MB_OK);
+      SetDlgItemInt (hwnd, IDC_TIMER, interval_, FALSE);
 
-  void set_timer (HWND);
-};
+      return TRUE;
+    }
 
-#include "timer_handler_private.hh"
+  if ( i < USER_TIMER_MINIMUM )
+    {
+      MessageBox (hwnd, TEXT ("Too small"), TEXT ("Warning"),
+                  MB_ICONWARNING | MB_OK);
+      SetDlgItemInt (hwnd, IDC_TIMER, USER_TIMER_MINIMUM, FALSE);
 
-#endif // GUARD_TIMER_HANDLER_HH
+      return TRUE;
+    }
+  else if ( i > USER_TIMER_MAXIMUM )
+    {
+      MessageBox (hwnd, TEXT ("Too large"), TEXT ("Warning"),
+                  MB_ICONWARNING | MB_OK);
+      SetDlgItemInt (hwnd, IDC_TIMER, USER_TIMER_MAXIMUM, FALSE);
+
+      return TRUE;
+    }
+
+  EndDialog (hwnd, i);
+
+  return TRUE;
+}
+
+INT_PTR
+timer_dialog_ui::Idcancel (HWND hwnd, WORD, WORD, LPARAM)
+{
+  EndDialog (hwnd, interval_);
+
+  return TRUE;
+}

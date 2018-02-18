@@ -34,7 +34,9 @@
 
 #include <windows.h>
 
+#include "per_monitor_dpi.hh"
 #include "stretch.hh"
+#include "timer.hh"
 
 template <class Derived>
 LRESULT
@@ -81,6 +83,21 @@ timer_handler<Derived>::Cmd_idm_use_timer (HWND hwnd, WORD, WORD, LPARAM)
 }
 
 template <class Derived>
+LRESULT
+timer_handler<Derived>::Cmd_idm_set_interval (HWND hwnd, WORD, WORD, LPARAM)
+{
+  {
+    auto &p {static_cast<Derived&> (*this)};
+    dpi_system_aware dsa;
+
+    interval_ = timer_dialog (p.get_hInst (), hwnd, interval_);
+  }
+  set_timer (hwnd);
+
+  return 0;
+}
+
+template <class Derived>
 void
 timer_handler<Derived>::set_timer (HWND hwnd)
 {
@@ -96,7 +113,7 @@ timer_handler<Derived>::set_timer (HWND hwnd)
   DrawMenuBar (hwnd);
 
   if (btimer_)
-    SetTimer (hwnd, timerid_ , 100 , nullptr); // 100 ms
+    SetTimer (hwnd , timerid_ , interval_, nullptr);
   else
     KillTimer (hwnd, timerid_);
 }

@@ -44,11 +44,14 @@
 #define IDM_COVER 0x114
 #define IDM_DOT_BY_DOT 0x115
 #define IDM_USE_TIMER 0x121
+#define IDM_SET_INTERVAL 0x122
 #define IDM_ABOUT 0x131
 
 #define IDD_ABOUT 0x301
+#define IDD_TIMER 0x302
 
 #define IDC_PACKAGE_URL 0x401
+#define IDC_TIMER 0x402
 
 #ifndef IDC_STATIC
 #define IDC_STATIC -1

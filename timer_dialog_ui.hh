@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// timer_handler.hh: Timer handler class
+// timer_dialog_ui.hh: timer dialog box UI class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,47 +32,41 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_TIMER_HANDLER_HH
-#define INCLUDE_GUARD_TIMER_HANDLER_HH
+#ifndef INCLUDE_TIMER_DIALOG_UI_HH
+#define INCLUDE_TIMER_DIALOG_UI_HH
 
 #include <windows.h>
 
-#include "procmap_init_base.hh"
-#include "cmdmap_init_base.hh"
-#include "pngview_res.h"
+#include "dialogbox.hh"
 
-template <class Derived>
-class timer_handler:  virtual public procmap_init_base<Derived>,
-                      virtual public cmdmap_init_base<Derived>
+class timer_dialog_ui: public dialogbox_class<timer_dialog_ui>
 {
 public:
-  timer_handler ()
+  timer_dialog_ui (UINT i): interval_ (i)
   {
-    this->add_temp_procmap (WM_TIMER, WmTimer);
-    this->add_temp_procmap (WM_CREATE, WmCreate);
-    this->add_temp_procmap (WM_DESTROY, WmDestroy);
+    flush_temp_procmap ();
+    add_procedure (WM_INITDIALOG, WmInitdialog);
 
-    this->add_temp_cmdprocmap (IDM_USE_TIMER, Cmd_idm_use_timer);
-    this->add_temp_cmdprocmap (IDM_SET_INTERVAL, Cmd_idm_set_interval);
+    flush_temp_cmdprocmap ();
+    add_cmdprocedure (IDOK, Idok);
+    add_cmdprocedure (IDCANCEL, Idcancel);
   }
-  ~timer_handler () = default;
+  ~timer_dialog_ui () = default;
 
-protected:
-  LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
-
-  LRESULT Cmd_idm_use_timer (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_set_interval (HWND, WORD, WORD, LPARAM);
+  UINT get_interval (void)
+  {
+    return interval_;
+  }
 
 private:
-  const UINT_PTR timerid_ {1};
-  bool btimer_ {true};
-  UINT interval_ {100}; // 100 ms
+  INT_PTR WmInitdialog (HWND, UINT, WPARAM, LPARAM);
 
-  void set_timer (HWND);
+  INT_PTR Idok (HWND, WORD, WORD, LPARAM);
+  INT_PTR Idcancel (HWND, WORD, WORD, LPARAM);
+
+  UINT interval_;
 };
 
-#include "timer_handler_private.hh"
+#include "timer_dialog_ui_private.hh"
 
-#endif // GUARD_TIMER_HANDLER_HH
+#endif // INCLUDE_TIMER_DIALOG_UI_HH

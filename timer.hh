@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// timer_handler.hh: Timer handler class
+// about.hh: Timer dialog
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,47 +32,11 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_GUARD_TIMER_HANDLER_HH
-#define INCLUDE_GUARD_TIMER_HANDLER_HH
+#ifndef INCLUDE_GUARD_TIMER_HH
+#define INCLUDE_GUARD_TIMER_HH
 
 #include <windows.h>
 
-#include "procmap_init_base.hh"
-#include "cmdmap_init_base.hh"
-#include "pngview_res.h"
+UINT timer_dialog (HINSTANCE, HWND, UINT);
 
-template <class Derived>
-class timer_handler:  virtual public procmap_init_base<Derived>,
-                      virtual public cmdmap_init_base<Derived>
-{
-public:
-  timer_handler ()
-  {
-    this->add_temp_procmap (WM_TIMER, WmTimer);
-    this->add_temp_procmap (WM_CREATE, WmCreate);
-    this->add_temp_procmap (WM_DESTROY, WmDestroy);
-
-    this->add_temp_cmdprocmap (IDM_USE_TIMER, Cmd_idm_use_timer);
-    this->add_temp_cmdprocmap (IDM_SET_INTERVAL, Cmd_idm_set_interval);
-  }
-  ~timer_handler () = default;
-
-protected:
-  LRESULT WmTimer (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
-  LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
-
-  LRESULT Cmd_idm_use_timer (HWND, WORD, WORD, LPARAM);
-  LRESULT Cmd_idm_set_interval (HWND, WORD, WORD, LPARAM);
-
-private:
-  const UINT_PTR timerid_ {1};
-  bool btimer_ {true};
-  UINT interval_ {100}; // 100 ms
-
-  void set_timer (HWND);
-};
-
-#include "timer_handler_private.hh"
-
-#endif // GUARD_TIMER_HANDLER_HH
+#endif // INCLUDE_GUARD_TIMER_HH
