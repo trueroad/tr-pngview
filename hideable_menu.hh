@@ -52,12 +52,18 @@ public:
   }
   ~hideable_menu () = default;
 
+  HMENU get_hmenu (void)
+  {
+    return hmenu_;
+  }
+
 protected:
   LRESULT WmSyscommand (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmExitmenuloop (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
+private:
   HMENU hmenu_ {nullptr};
 };
 

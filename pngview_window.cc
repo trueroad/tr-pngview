@@ -66,7 +66,7 @@ pngview_window::WmCreate (HWND hwnd, UINT uMsg,
                           WPARAM wParam, LPARAM lParam)
 {
   hideable_menu<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
-  sb_.init (hwnd, hmenu_);
+  sb_.init (hwnd, get_hmenu ());
 
   drag_and_drop<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
   timer_handler<pngview_window>::WmCreate (hwnd, uMsg, wParam, lParam);
