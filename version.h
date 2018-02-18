@@ -38,7 +38,7 @@
 #define PACKAGE_NAME \
   "tr-pngview"
 #define PACKAGE_VERSION \
-  "2018-02-18.03"
+  "1.0.0 (2018-02-18.12)"
 #define PACKAGE_COPYRIGHT \
   "Copyright (C) 2018 Masamichi Hosoda. All rights reserved."
 #define PACKAGE_LICENSE \
@@ -47,9 +47,9 @@
   "https://github.com/trueroad/tr-pngview"
 
 #define VER_FILEVERSION \
-  0,0,0,0
+  1,0,0,0
 #define VER_PRODUCTVERSION \
-  0,0,0,0
+  1,0,0,0
 
 #define VER_FILEDESCRIPTION_STR \
   "TrueRoad PNG Viewer\0"

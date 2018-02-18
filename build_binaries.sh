@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.0.0
+VERSION=1.0.0
 
 rm -fr binary
 
