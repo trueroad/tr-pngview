@@ -38,9 +38,12 @@
 #include <windows.h>
 
 #include "procmap_init_base.hh"
+#include "cmdmap_init_base.hh"
+#include "pngview_res.h"
 
 template <class Derived>
-class timer_handler:  virtual public procmap_init_base<Derived>
+class timer_handler:  virtual public procmap_init_base<Derived>,
+                      virtual public cmdmap_init_base<Derived>
 {
 public:
   timer_handler ()
@@ -48,6 +51,8 @@ public:
     this->add_temp_procmap (WM_TIMER, WmTimer);
     this->add_temp_procmap (WM_CREATE, WmCreate);
     this->add_temp_procmap (WM_DESTROY, WmDestroy);
+
+    this->add_temp_cmdprocmap (IDM_USE_TIMER, Cmd_idm_use_timer);
   }
   ~timer_handler () = default;
 
@@ -56,8 +61,13 @@ protected:
   LRESULT WmCreate (HWND, UINT, WPARAM, LPARAM);
   LRESULT WmDestroy (HWND, UINT, WPARAM, LPARAM);
 
+  LRESULT Cmd_idm_use_timer (HWND, WORD, WORD, LPARAM);
+
 private:
   const UINT_PTR timerid_ {1};
+  bool btimer_ {true};
+
+  void set_timer (HWND);
 };
 
 #include "timer_handler_private.hh"

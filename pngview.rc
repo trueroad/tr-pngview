@@ -76,12 +76,15 @@ IDM_MENU MENU
   MENUITEM "&Open", IDM_OPEN
   MENUITEM "E&xit", IDM_EXIT
  }
- POPUP "&Mode" {
+ POPUP "&Stretch Mode" {
   MENUITEM "&DPI scaling", IDM_DPI_SCALING
   MENUITEM "&Fill", IDM_FILL
   MENUITEM "&Contain", IDM_CONTAIN
   MENUITEM "Co&ver", IDM_COVER
   MENUITEM "Dot &by dot", IDM_DOT_BY_DOT
+ }
+ POPUP "&Timer" {
+  MENUITEM "&Use periodic read timer", IDM_USE_TIMER
  }
  POPUP "&Help" {
   MENUITEM "&About...", IDM_ABOUT

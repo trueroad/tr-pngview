@@ -43,7 +43,8 @@
 #define IDM_CONTAIN 0x113
 #define IDM_COVER 0x114
 #define IDM_DOT_BY_DOT 0x115
-#define IDM_ABOUT 0x121
+#define IDM_USE_TIMER 0x121
+#define IDM_ABOUT 0x131
 
 #define IDD_ABOUT 0x301
 

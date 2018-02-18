@@ -55,20 +55,48 @@ timer_handler<Derived>::WmTimer (HWND hwnd, UINT uMsg,
 
 template <class Derived>
 LRESULT
-timer_handler<Derived>::WmCreate (HWND hwnd, UINT uMsg,
-                                  WPARAM wParam, LPARAM lParam)
+timer_handler<Derived>::WmCreate (HWND hwnd, UINT, WPARAM, LPARAM)
 {
-  SetTimer (hwnd , timerid_ , 100 , nullptr); // 100 ms
+  set_timer (hwnd);
 
   return 0;
 }
 
 template <class Derived>
 LRESULT
-timer_handler<Derived>::WmDestroy (HWND hwnd, UINT uMsg,
-                                   WPARAM wParam, LPARAM lParam)
+timer_handler<Derived>::WmDestroy (HWND hwnd, UINT, WPARAM, LPARAM)
 {
-  KillTimer (hwnd, timerid_);
+  btimer_ = false;
+  set_timer (hwnd);
 
   return 0;
+}
+
+template <class Derived>
+LRESULT
+timer_handler<Derived>::Cmd_idm_use_timer (HWND hwnd, WORD, WORD, LPARAM)
+{
+  btimer_ = !btimer_;
+  set_timer (hwnd);
+}
+
+template <class Derived>
+void
+timer_handler<Derived>::set_timer (HWND hwnd)
+{
+  auto &p {static_cast<Derived&> (*this)};
+
+  MENUITEMINFO mii {};
+  mii.cbSize = sizeof (mii);
+  mii.fMask = MIIM_STATE;
+
+  mii.fState = btimer_ ? MFS_CHECKED : MFS_UNCHECKED;
+  SetMenuItemInfo (p.get_hmenu (), IDM_USE_TIMER, FALSE, &mii);
+
+  DrawMenuBar (hwnd);
+
+  if (btimer_)
+    SetTimer (hwnd, timerid_ , 100 , nullptr); // 100 ms
+  else
+    KillTimer (hwnd, timerid_);
 }
