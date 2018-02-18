@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// about_dialog_ui.hh: about dialog box UI class
+// syslink.hh: SysLink processing class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,27 +32,33 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_ABOUT_DIALOG_UI_HH
-#define INCLUDE_ABOUT_DIALOG_UI_HH
+#include <commctrl.h>
 
-#include <windows.h>
+#include "pngview_res.h"
 
-#include "dialogbox.hh"
-#include "syslink.hh"
-
-class about_dialog_ui: public dialogbox_class<about_dialog_ui>,
-                       public syslink_class<about_dialog_ui>
+template <class Derived>
+INT_PTR
+syslink_class<Derived>::WmNotify (HWND hwnd, UINT uMsg,
+                                  WPARAM wParam, LPARAM lParam)
 {
-public:
-  about_dialog_ui ()
-  {
-    flush_temp_procmap ();
+  auto pNMHdr {reinterpret_cast<LPNMHDR> (lParam)};
 
-    flush_temp_cmdprocmap ();
-    add_cmdprocedure (IDOK, enddialog);
-    add_cmdprocedure (IDCANCEL, enddialog);
-  }
-  ~about_dialog_ui () = default;
-};
+  if (pNMHdr->idFrom == IDC_PACKAGE_URL)
+    {
+      switch (pNMHdr->code)
+        {
+        case NM_CLICK:
+          // no break
+        case NM_RETURN:
+          {
+            auto pNMLink {reinterpret_cast<PNMLINK> (lParam)};
+            auto item {pNMLink->item};
 
-#endif // INCLUDE_ABOUT_DIALOG_UI_HH
+            ShellExecuteW (hwnd, L"open", item.szUrl,
+                           nullptr, nullptr, SW_SHOWNORMAL);
+          }
+          return TRUE;
+        }
+    }
+  return FALSE;
+}

@@ -2,7 +2,7 @@
 // tr-pngview
 // https://github.com/trueroad/tr-pngview
 //
-// about_dialog_ui.hh: about dialog box UI class
+// syslink.hh: SysLink processing class
 //
 // Copyright (C) 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -32,27 +32,27 @@
 // SUCH DAMAGE.
 //
 
-#ifndef INCLUDE_ABOUT_DIALOG_UI_HH
-#define INCLUDE_ABOUT_DIALOG_UI_HH
+#ifndef INCLUDE_SYSLINK_HH
+#define INCLUDE_SYSLINK_HH
 
 #include <windows.h>
 
-#include "dialogbox.hh"
-#include "syslink.hh"
+#include "dlgprocmap_init_base.hh"
 
-class about_dialog_ui: public dialogbox_class<about_dialog_ui>,
-                       public syslink_class<about_dialog_ui>
+template <class Derived>
+class syslink_class: virtual public dlgprocmap_init_base<Derived>
 {
 public:
-  about_dialog_ui ()
+  syslink_class ()
   {
-    flush_temp_procmap ();
-
-    flush_temp_cmdprocmap ();
-    add_cmdprocedure (IDOK, enddialog);
-    add_cmdprocedure (IDCANCEL, enddialog);
+    this->add_temp_procmap (WM_NOTIFY, WmNotify);
   }
-  ~about_dialog_ui () = default;
+  ~syslink_class () = default;
+
+private:
+  INT_PTR WmNotify (HWND, UINT, WPARAM, LPARAM);
 };
 
-#endif // INCLUDE_ABOUT_DIALOG_UI_HH
+#include "syslink_private.hh"
+
+#endif // INCLUDE_SYSLINK_HH
