@@ -58,7 +58,7 @@ drag_and_drop<Derived>::WmDropfiles (HWND hwnd, UINT uMsg,
     }
   }
 
-  return DefWindowProc (hwnd, uMsg, wParam, lParam);
+  return 0;
 }
 
 template <class Derived>
